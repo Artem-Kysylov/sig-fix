@@ -229,6 +229,9 @@ textarea:focus-visible {
     .panel-output {
         min-height: 55dvh;
         flex: none;
+    }
+    
+    .app-footer {
         padding-bottom: env(safe-area-inset-bottom);
     }
 }
@@ -327,4 +330,32 @@ textarea:focus-visible {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────── */
+
+.app-footer {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.footer-links a {
+    position: relative;
+}
+
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 50%;
+    background-color: currentColor;
+    transition: all 0.2s ease;
+    transform: translateX(-50%);
+}
+
+.footer-links a:hover::after {
+    width: 100%;
 }
