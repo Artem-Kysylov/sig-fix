@@ -75,16 +75,82 @@ html {
     color: #0078D4;
 }
 
+/* Hero headline — first screen */
+.hero-text-block {
+    flex-shrink: 0;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 28px max(1rem, env(safe-area-inset-left)) 20px max(1rem, env(safe-area-inset-right));
+    text-align: center;
+}
+
+.hero-text-block h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+
+.hero-text-block p {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.45;
+    margin: 0;
+    text-align: center;
+}
+
 /* Anchor scroll offset — keeps section titles below the sticky header */
 #pricing,
 #faq {
     scroll-margin-top: 80px;
 }
 
+@media (min-width: 640px) {
+    .hero-text-block {
+        padding-left: max(1.5rem, env(safe-area-inset-left));
+        padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
+
+    .hero-text-block h1 {
+        font-size: 28px;
+    }
+}
+
 @media (min-width: 1024px) {
     .app-container,
-    .app-shell {
+    .app-shell,
+    .hero-text-block {
         max-width: 1200px;
+    }
+
+    .hero-text-block {
+        padding-top: 24px;
+        padding-bottom: 18px;
+    }
+
+    .hero-text-block h1 {
+        font-size: 28px;
+    }
+
+    /* Keep the app canvas within 100dvh after the hero block */
+    .app-header .app-container {
+        padding-top: 0.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    .app-panels .panel-input > .panel-section:first-child,
+    .app-panels .panel-output > .panel-section:first-child {
+        padding-top: 0.75rem !important;
+    }
+
+    .app-panels .panel-input > .panel-section:last-child,
+    .app-panels .panel-output > .panel-section:last-child {
+        padding-bottom: 0.75rem !important;
     }
 }
 
