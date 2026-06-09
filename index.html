@@ -35,13 +35,16 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="font-inter bg-obsidian text-white lg:overflow-hidden lg:h-screen">
-    <div class="app-layout flex flex-col min-h-dvh lg:h-screen w-full">
+<body class="font-inter bg-obsidian text-white">
+    <!-- ═══════════════════════════════════════════════════
+         APP SECTION — exactly one viewport tall on desktop
+    ════════════════════════════════════════════════════ -->
+    <div class="app-layout flex flex-col h-dvh w-full">
         <!-- Global Header — full-width background, content in container -->
         <header class="app-header shrink-0 w-full border-b border-white/10 enhanced-glass">
             <div class="app-container px-4 sm:px-6 py-3 sm:py-4">
             <div class="app-header__inner flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div class="flex items-center space-x-3">
+                <a href="/" class="flex items-center space-x-3 hover:opacity-90 transition-opacity shrink-0">
                     <div class="w-8 h-8 bg-outlook-blue rounded-lg flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/>
@@ -51,11 +54,17 @@
                         <h1 class="text-lg sm:text-xl font-semibold">SigFix</h1>
                         <p class="text-xs text-white/60 truncate">sigfix.syntaxlabs.io</p>
                     </div>
-                </div>
-                <div class="privacy-badge flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 self-start sm:self-auto">
-                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
-                    <span class="privacy-badge__full text-xs text-green-400 font-medium">Local-only / No Server Needed</span>
-                    <span class="privacy-badge__short text-xs text-green-400 font-medium">Local-only</span>
+                </a>
+                <div class="app-header__actions flex items-center gap-4 sm:gap-6 self-start sm:self-auto">
+                    <nav class="header-nav" aria-label="Page sections">
+                        <a href="#pricing" class="header-nav__link">Pricing</a>
+                        <a href="#faq" class="header-nav__link">FAQ</a>
+                    </nav>
+                    <div class="privacy-badge flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
+                        <span class="privacy-badge__full text-xs text-green-400 font-medium">Local-only / No Server Needed</span>
+                        <span class="privacy-badge__short text-xs text-green-400 font-medium">Local-only</span>
+                    </div>
                 </div>
             </div>
             </div>
@@ -206,28 +215,320 @@
         </div>
         </div>
         
-        <!-- Footer -->
-        <footer class="app-footer shrink-0 w-full border-t border-white/10">
-            <div class="app-container px-4 sm:px-6 py-4 sm:py-6">
-                <div class="footer-content flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-                    <div class="footer-brand text-white/60">
-                        <span>© 2026 Spendly (Syntax Labs). All rights reserved.</span>
+    </div><!-- /app-layout -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         LANDING SECTIONS — scroll below the app
+    ════════════════════════════════════════════════════ -->
+    <div class="landing">
+
+        <!-- ── 1. The Ugly Truth ──────────────────────────── -->
+        <section class="lp-section lp-ugly-truth" id="why-outlook-breaks">
+            <div class="lp-container">
+                <div class="lp-split">
+                    <div class="lp-split__lead">
+                        <span class="lp-eyebrow">The Ugly Truth</span>
+                        <h2 class="lp-heading">Why does Outlook always break your signatures?</h2>
                     </div>
-                    <div class="footer-links flex flex-wrap items-center gap-4 sm:gap-6">
-                        <a href="/privacy-policy" class="text-white/60 hover:text-white transition-colors duration-200">
-                            Privacy Policy
-                        </a>
-                        <a href="/terms-and-conditions" class="text-white/60 hover:text-white transition-colors duration-200">
-                            Terms & Conditions
-                        </a>
-                        <a href="/refund-policy" class="text-white/60 hover:text-white transition-colors duration-200">
-                            Refund Policy
-                        </a>
+                    <div class="lp-split__body">
+                        <p>Outlook doesn't use a browser engine to render emails. It uses the <strong>Microsoft Word Rendering Engine</strong> — the same technology that powers your Word documents.</p>
+                        <p>That means every modern CSS feature you rely on is silently ignored. <code>display: flex</code> does nothing. <code>gap</code> disappears. <code>border-radius</code> gets stripped. Even <code>max-width</code> is misinterpreted.</p>
+                        <p>The only reliable layout method is deeply nested <strong>HTML tables</strong> with inline styles, VML shapes for backgrounds, and <code>&lt;!--[if mso]&gt;</code> conditional comments that modern browsers never see. Writing this by hand is painful. SigFix generates it automatically.</p>
                     </div>
                 </div>
             </div>
-        </footer>
-    </div>
+        </section>
+
+        <!-- ── 2. Before / After ──────────────────────────── -->
+        <section class="lp-section lp-before-after" id="before-after">
+            <div class="lp-container">
+                <div class="lp-section-header">
+                    <span class="lp-eyebrow">Visual Proof</span>
+                    <h2 class="lp-heading lp-heading--center">What Outlook actually sees</h2>
+                </div>
+                <div class="lp-ba-grid">
+                    <!-- BEFORE -->
+                    <div class="lp-ba-card lp-ba-card--broken">
+                        <div class="lp-ba-label lp-ba-label--broken">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                            Broken in Outlook
+                        </div>
+                        <div class="lp-ba-preview lp-ba-preview--broken">
+                            <div class="lp-broken-sig">
+                                <div class="lp-broken-sig__avatar"></div>
+                                <div class="lp-broken-sig__text">
+                                    <div class="lp-broken-sig__name"></div>
+                                    <div class="lp-broken-sig__role"></div>
+                                    <div class="lp-broken-sig__link"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lp-ba-code">
+                            <span class="lp-code-dim">&lt;div</span> <span class="lp-code-attr">style</span>=<span class="lp-code-val">"display:flex;gap:16px"</span><span class="lp-code-dim">&gt;</span><br>
+                            &nbsp;&nbsp;<span class="lp-code-dim">&lt;img</span> <span class="lp-code-attr">class</span>=<span class="lp-code-val">"avatar"</span><span class="lp-code-dim">&gt;</span><br>
+                            <span class="lp-code-comment">/* Outlook ignores flex — layout collapses */</span>
+                        </div>
+                    </div>
+                    <!-- AFTER -->
+                    <div class="lp-ba-card lp-ba-card--fixed">
+                        <div class="lp-ba-label lp-ba-label--fixed">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+                            Fixed by SigFix
+                        </div>
+                        <div class="lp-ba-preview lp-ba-preview--fixed">
+                            <div class="lp-fixed-sig">
+                                <div class="lp-fixed-sig__avatar"></div>
+                                <div class="lp-fixed-sig__divider"></div>
+                                <div class="lp-fixed-sig__text">
+                                    <div class="lp-fixed-sig__name"></div>
+                                    <div class="lp-fixed-sig__role"></div>
+                                    <div class="lp-fixed-sig__links">
+                                        <div class="lp-fixed-sig__link"></div>
+                                        <div class="lp-fixed-sig__link lp-fixed-sig__link--short"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lp-ba-code">
+                            <span class="lp-code-dim">&lt;table</span> <span class="lp-code-attr">role</span>=<span class="lp-code-val">"presentation"</span><span class="lp-code-dim">&gt;&lt;tr&gt;</span><br>
+                            &nbsp;&nbsp;<span class="lp-code-dim">&lt;td</span> <span class="lp-code-attr">valign</span>=<span class="lp-code-val">"middle"</span> <span class="lp-code-attr">width</span>=<span class="lp-code-val">"88"</span><span class="lp-code-dim">&gt;</span><br>
+                            <span class="lp-code-ok">/* Works in every Outlook version ✓ */</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 3. How It Works ───────────────────────────── -->
+        <section class="lp-section lp-how" id="how-it-works">
+            <div class="lp-container">
+                <div class="lp-section-header">
+                    <span class="lp-eyebrow">How It Works</span>
+                    <h2 class="lp-heading lp-heading--center">Three steps to an unbreakable signature</h2>
+                </div>
+                <div class="lp-steps">
+                    <div class="lp-step">
+                        <div class="lp-step__number">01</div>
+                        <div class="lp-step__icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6m-3-3v6M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/></svg>
+                        </div>
+                        <h3 class="lp-step__title">Paste</h3>
+                        <p class="lp-step__desc">Drop in broken HTML, an AI-generated snippet, or raw text copied from an email. Any format is accepted.</p>
+                    </div>
+                    <div class="lp-step__connector"></div>
+                    <div class="lp-step">
+                        <div class="lp-step__number">02</div>
+                        <div class="lp-step__icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                        </div>
+                        <h3 class="lp-step__title">Fix</h3>
+                        <p class="lp-step__desc">Our local engine rebuilds the DOM tree to MS Word standards in under 1ms — inlining CSS, converting Flexbox to tables, and adding MSO shims.</p>
+                    </div>
+                    <div class="lp-step__connector"></div>
+                    <div class="lp-step">
+                        <div class="lp-step__number">03</div>
+                        <div class="lp-step__icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        </div>
+                        <h3 class="lp-step__title">Copy</h3>
+                        <p class="lp-step__desc">Grab the bulletproof HTML source or copy Rich Text directly into your email client's signature settings — images, links, and formatting intact.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 4. Pricing ────────────────────────────────── -->
+        <section class="lp-section lp-pricing" id="pricing">
+            <div class="lp-container">
+                <div class="lp-section-header">
+                    <span class="lp-eyebrow">Pricing</span>
+                    <h2 class="lp-heading lp-heading--center">One price. Yours forever.</h2>
+                </div>
+                <div class="lp-pricing-grid">
+
+                    <!-- Free Plan -->
+                    <div class="lp-pricing-card lp-pricing-card--free">
+                        <div class="lp-pricing-badge lp-pricing-badge--muted">Free Plan</div>
+                        <div class="lp-pricing-price">
+                            <span class="lp-pricing-currency">$</span>0
+                            <span class="lp-pricing-note">forever</span>
+                        </div>
+                        <ul class="lp-pricing-benefits">
+                            <li>
+                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">3 signature fixes per day</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Access to AI Transpiler mode</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Copy Outlook-safe HTML code</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Local-first browser processing</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="lp-pricing-cta lp-pricing-cta--outline">Use for Free</a>
+                    </div>
+
+                    <!-- Lifetime Access -->
+                    <div class="lp-pricing-card lp-pricing-card--pro">
+                        <div class="lp-pricing-badge">Lifetime Access</div>
+                        <div class="lp-pricing-price">
+                            <span class="lp-pricing-currency">$</span>14
+                            <span class="lp-pricing-note">one-time payment</span>
+                        </div>
+                        <ul class="lp-pricing-benefits">
+                            <li>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text"><strong>UNLIMITED</strong> signature fixes forever</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Access to <strong>ALL</strong> modes (Transpiler, Cleaner, Extractor)</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Instant One-Click Rich Text copying (No code needed)</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Never pay monthly subscriptions</span>
+                            </li>
+                            <li>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Support independent indie development</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="lp-pricing-cta">Get Lifetime Access</a>
+                    </div>
+
+                </div>
+
+                <div class="lp-pricing-meta">
+                    <div class="lp-pricing-audience">
+                        <strong>Who is this for?</strong>
+                        Sales teams &nbsp;·&nbsp; Recruiters &nbsp;·&nbsp; Agencies &nbsp;·&nbsp; Founders
+                    </div>
+                    <p class="lp-pricing-footer">Processed by Paddle &nbsp;·&nbsp; 30-day refund guarantee</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 5. Local-First Security ───────────────────── -->
+        <section class="lp-section lp-security" id="security">
+            <div class="lp-container">
+                <div class="lp-security-inner">
+                    <div class="lp-security-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                    </div>
+                    <h2 class="lp-security-title">Zero server processing</h2>
+                    <p class="lp-security-text">Your data never leaves your browser. All HTML parsing, CSS inlining, and DOM restructuring happens locally on your machine. We can't see your signature — and we never will.</p>
+                    <div class="lp-security-badges">
+                        <span class="lp-security-badge">No uploads</span>
+                        <span class="lp-security-badge">No accounts</span>
+                        <span class="lp-security-badge">No telemetry</span>
+                        <span class="lp-security-badge">Works offline</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 6. FAQ ────────────────────────────────────── -->
+        <section class="lp-section lp-faq" id="faq">
+            <div class="lp-container">
+                <div class="lp-section-header">
+                    <span class="lp-eyebrow">FAQ</span>
+                    <h2 class="lp-heading lp-heading--center">Common questions</h2>
+                </div>
+                <div class="lp-accordion">
+
+                    <details class="lp-faq-item">
+                        <summary class="lp-faq-question">
+                            Why does Outlook break HTML email signatures?
+                            <span class="lp-faq-chevron">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </summary>
+                        <div class="lp-faq-answer">
+                            <p>Outlook for Windows uses the Microsoft Word rendering engine — not a browser — to display email content. This means modern CSS properties like <code>display: flex</code>, <code>grid</code>, <code>gap</code>, <code>border-radius</code>, and <code>max-width</code> are either ignored or misinterpreted. The only reliable layout method is nested HTML tables with fully inline styles.</p>
+                        </div>
+                    </details>
+
+                    <details class="lp-faq-item">
+                        <summary class="lp-faq-question">
+                            How do I create an Outlook-compatible email signature?
+                            <span class="lp-faq-chevron">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </summary>
+                        <div class="lp-faq-answer">
+                            <p>The signature must be built using HTML tables for layout, with all styles inlined directly into the elements — no external stylesheets, no <code>&lt;style&gt;</code> blocks. Images need explicit <code>width</code> and <code>height</code> HTML attributes. For advanced layout, MSO conditional comments (<code>&lt;!--[if mso]&gt;...&lt;![endif]--&gt;</code>) can be used. SigFix handles all of this automatically.</p>
+                        </div>
+                    </details>
+
+                    <details class="lp-faq-item">
+                        <summary class="lp-faq-question">
+                            Does Outlook support Flexbox or CSS Grid?
+                            <span class="lp-faq-chevron">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </summary>
+                        <div class="lp-faq-answer">
+                            <p>No. Outlook 2013–2021 and Outlook on Windows completely ignore <code>display: flex</code> and <code>display: grid</code>. SigFix's AI Transpiler detects all flex containers and automatically converts them into equivalent <code>&lt;table&gt;</code> structures with proper <code>valign</code> and <code>width</code> attributes that Outlook understands.</p>
+                        </div>
+                    </details>
+
+                    <details class="lp-faq-item">
+                        <summary class="lp-faq-question">
+                            Is SigFix a subscription?
+                            <span class="lp-faq-chevron">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </summary>
+                        <div class="lp-faq-answer">
+                            <p>No. SigFix is a one-time payment of <strong>$14</strong> for lifetime access. No monthly fees, no renewal reminders, no surprise charges. You pay once and the tool is yours for as long as the product exists. Payments are processed securely by Paddle.com with a 30-day refund guarantee.</p>
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+        </section>
+
+    </div><!-- /landing -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         FOOTER
+    ════════════════════════════════════════════════════ -->
+    <footer class="lp-footer">
+        <div class="lp-container">
+            <div class="lp-footer-top">
+                <div class="lp-footer-brand">
+                    <div class="lp-footer-logo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/></svg>
+                    </div>
+                    <div>
+                        <p class="lp-footer-brand-name">SigFix</p>
+                        <p class="lp-footer-toolkit">Part of the Syntax Labs Email Toolkit</p>
+                    </div>
+                </div>
+                <nav class="lp-footer-nav">
+                    <a href="/privacy-policy">Privacy Policy</a>
+                    <a href="/terms-and-conditions">Terms of Service</a>
+                    <a href="/refund-policy">Refund Policy</a>
+                </nav>
+            </div>
+            <div class="lp-footer-bottom">
+                <p>© 2026 Spendly (Syntax Labs). All rights reserved.</p>
+                <p>Payments processed by <a href="https://paddle.com" target="_blank" rel="noopener">Paddle.com</a> · Merchant of Record</p>
+            </div>
+        </div>
+    </footer>
 
     <script type="module" src="js/app.js"></script>
 </body>
