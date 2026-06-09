@@ -10,6 +10,7 @@ ROOT = Path(__file__).parent
 
 ROUTES = {
     '/': 'index.html',
+    '/cookbook': 'cookbook.html',
     '/privacy-policy': 'privacy-policy/index.html',
     '/terms-and-conditions': 'terms-and-conditions/index.html',
     '/refund-policy': 'refund-policy/index.html',
@@ -32,5 +33,5 @@ class SigFixHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     with socketserver.TCPServer(('', PORT), SigFixHandler) as httpd:
         print(f'SigFix dev server → http://localhost:{PORT}')
-        print('Routes: /  /privacy-policy  /terms-and-conditions  /refund-policy')
+        print('Routes: /  /cookbook  /privacy-policy  /terms-and-conditions  /refund-policy')
         httpd.serve_forever()

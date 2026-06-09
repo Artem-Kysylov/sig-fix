@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Signature Cookbook — SigFix</title>
+    <meta name="description" content="Step-by-step recipes for fixing the most common Outlook HTML email signature problems: broken images, Flexbox layouts, style blocks, and centering.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Cookbook page-specific styles ───────────────────── */
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0B0F17;
+            color: rgba(255,255,255,0.85);
+            margin: 0;
+            padding: 0;
+        }
+
+        .ck-header {
+            width: 100%;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(11,15,23,0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .ck-header__inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .ck-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .ck-back:hover { color: #ffffff; }
+
+        .ck-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .ck-brand__logo {
+            width: 32px;
+            height: 32px;
+            background: #0078D4;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .ck-brand__name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* ── Hero ─────────────────────────────────────────────── */
+        .ck-hero {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 72px 24px 56px;
+            text-align: center;
+        }
+
+        .ck-hero__eyebrow {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #0078D4;
+            margin-bottom: 16px;
+        }
+
+        .ck-hero__title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.15;
+            margin: 0 0 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .ck-hero__subtitle {
+            font-size: 1.0625rem;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.7;
+            margin: 0;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── TOC nav ──────────────────────────────────────────── */
+        .ck-toc {
+            max-width: 800px;
+            margin: 0 auto 64px;
+            padding: 0 24px;
+        }
+
+        .ck-toc__inner {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 28px 32px;
+        }
+
+        .ck-toc__title {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin: 0 0 16px;
+        }
+
+        .ck-toc__list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ck-toc__list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .ck-toc__list a:hover { color: #60b4ff; }
+
+        .ck-toc__num {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0078D4;
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        /* ── Recipes ──────────────────────────────────────────── */
+        .ck-recipes {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px 96px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        .ck-recipe {
+            scroll-margin-top: 96px;
+        }
+
+        .ck-recipe__tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #0078D4;
+            margin-bottom: 16px;
+        }
+
+        .ck-recipe__title {
+            font-size: clamp(1.4rem, 3vw, 1.875rem);
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+            margin: 0 0 32px;
+            letter-spacing: -0.01em;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            padding-bottom: 24px;
+        }
+
+        .ck-block {
+            margin-bottom: 28px;
+        }
+
+        .ck-block__label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .ck-block__label--problem {
+            color: #f87171;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .ck-block__label--fix {
+            color: #34d399;
+            background: rgba(52,211,153,0.08);
+            border: 1px solid rgba(52,211,153,0.2);
+        }
+
+        .ck-block__label--how {
+            color: #60b4ff;
+            background: rgba(0,120,212,0.1);
+            border: 1px solid rgba(0,120,212,0.2);
+        }
+
+        .ck-block p {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.75;
+            margin: 0 0 12px;
+        }
+
+        .ck-block p:last-child { margin-bottom: 0; }
+
+        .ck-block strong {
+            color: rgba(255,255,255,0.85);
+            font-weight: 600;
+        }
+
+        .ck-block code,
+        .ck-block p code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85em;
+            color: #79c0ff;
+            background: rgba(121,192,255,0.1);
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        /* Code blocks */
+        .ck-code {
+            background: linear-gradient(160deg, rgba(8,12,20,0.95), rgba(11,15,23,0.98));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 16px 0 0;
+        }
+
+        .ck-code__bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .ck-code__lang {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+        }
+
+        .ck-code__badge {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .ck-code__badge--bad {
+            color: #f87171;
+            background: rgba(239,68,68,0.1);
+        }
+
+        .ck-code__badge--good {
+            color: #34d399;
+            background: rgba(52,211,153,0.08);
+        }
+
+        .ck-code pre {
+            margin: 0;
+            padding: 20px 20px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #b8c0cc;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .ck-code .t-tag   { color: #79c0ff; font-weight: 500; }
+        .ck-code .t-attr  { color: #ffa657; }
+        .ck-code .t-val   { color: #7ee787; }
+        .ck-code .t-cmt   { color: #6e7681; font-style: italic; }
+        .ck-code .t-prop  { color: #ffa657; }
+        .ck-code .t-num   { color: #79c0ff; }
+
+        /* Divider */
+        .ck-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin: 0;
+        }
+
+        /* CTA inside recipe */
+        .ck-recipe__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding: 12px 20px;
+            background: #0078D4;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .ck-recipe__cta:hover {
+            background: #106EBE;
+            transform: translateY(-1px);
+        }
+
+        /* ── Footer ───────────────────────────────────────────── */
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="ck-header">
+        <div class="ck-header__inner">
+            <a href="/" class="ck-back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to App
+            </a>
+            <a href="/" class="ck-brand">
+                <div class="ck-brand__logo">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/></svg>
+                </div>
+                <span class="ck-brand__name">SigFix</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <div class="ck-hero">
+        <span class="ck-hero__eyebrow">Knowledge Base</span>
+        <h1 class="ck-hero__title">HTML Signature Cookbook</h1>
+        <p class="ck-hero__subtitle">The most common reasons Outlook destroys email signatures — and exactly how to fix each one.</p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="ck-toc">
+        <div class="ck-toc__inner">
+            <p class="ck-toc__title">Recipes in this guide</p>
+            <ol class="ck-toc__list">
+                <li>
+                    <a href="#recipe-image">
+                        <span class="ck-toc__num">01</span>
+                        Image Too Large in Outlook
+                    </a>
+                </li>
+                <li>
+                    <a href="#recipe-flexbox">
+                        <span class="ck-toc__num">02</span>
+                        Flexbox Layout Collapses
+                    </a>
+                </li>
+                <li>
+                    <a href="#recipe-style-block">
+                        <span class="ck-toc__num">03</span>
+                        Styles in &lt;style&gt; Tag Ignored
+                    </a>
+                </li>
+                <li>
+                    <a href="#recipe-margin-center">
+                        <span class="ck-toc__num">04</span>
+                        Centering with margin: auto Fails
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Recipes -->
+    <div class="ck-recipes">
+
+        <!-- ── Recipe 1: Image size ────────────────────────── -->
+        <article class="ck-recipe" id="recipe-image">
+            <div class="ck-recipe__tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Recipe 01
+            </div>
+            <h2 class="ck-recipe__title">Image Too Large in Outlook</h2>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">The Problem</span>
+                <p>Your company logo or profile avatar looks fine in Gmail and Apple Mail, but in Outlook it renders at full native resolution — sometimes hundreds of pixels wide — and completely destroys the signature layout.</p>
+                <p>The root cause is that <strong>Outlook's Word rendering engine ignores CSS <code>width</code> and <code>height</code> properties</strong> set via <code>style=""</code> attributes or <code>&lt;style&gt;</code> blocks. If you write <code>style="width: 80px"</code>, Outlook simply doesn't apply it.</p>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">Broken HTML</span>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--bad">Breaks in Outlook</span>
+                    </div>
+                    <pre><span class="t-tag">&lt;img</span>
+  <span class="t-attr">src</span>=<span class="t-val">"https://example.com/avatar.jpg"</span>
+  <span class="t-attr">alt</span>=<span class="t-val">"Sarah Mitchell"</span>
+  <span class="t-attr">style</span>=<span class="t-val">"width: 80px; height: 80px; border-radius: 50%;"</span>
+<span class="t-tag">&gt;</span>
+<span class="t-cmt">&lt;!-- Outlook ignores CSS width — renders at full size --&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--fix">The Fix</span>
+                <p>Add explicit <strong>HTML attributes</strong> <code>width</code> and <code>height</code> directly on the <code>&lt;img&gt;</code> tag. These are not CSS — they are old-school HTML presentation attributes that the Word engine does understand. Also remove <code>border-radius</code> (Outlook ignores it) and add <code>border="0"</code> to prevent the default image border in some email clients.</p>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--good">Works in Outlook</span>
+                    </div>
+                    <pre><span class="t-tag">&lt;img</span>
+  <span class="t-attr">src</span>=<span class="t-val">"https://example.com/avatar.jpg"</span>
+  <span class="t-attr">alt</span>=<span class="t-val">"Sarah Mitchell"</span>
+  <span class="t-attr">width</span>=<span class="t-val">"80"</span>
+  <span class="t-attr">height</span>=<span class="t-val">"80"</span>
+  <span class="t-attr">border</span>=<span class="t-val">"0"</span>
+  <span class="t-attr">style</span>=<span class="t-val">"display: block; width: 80px; height: 80px;"</span>
+<span class="t-tag">&gt;</span>
+<span class="t-cmt">&lt;!-- HTML width/height attrs enforce dimensions in Outlook --&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--how">How SigFix Automates It</span>
+                <p>SigFix's <strong>AI Transpiler</strong> scans every <code>&lt;img&gt;</code> element in your signature. If it finds a CSS <code>width</code> value in the <code>style</code> attribute, it automatically copies that value into a HTML <code>width</code> attribute. It also adds <code>height</code>, sets <code>border="0"</code>, and adds <code>display: block</code> to the inline style — all in under a millisecond.</p>
+                <a href="/" class="ck-recipe__cta">
+                    Try it in SigFix
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+        </article>
+
+        <hr class="ck-divider">
+
+        <!-- ── Recipe 2: Flexbox ───────────────────────────── -->
+        <article class="ck-recipe" id="recipe-flexbox">
+            <div class="ck-recipe__tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/><rect x="14" y="17" width="7" height="4" rx="1"/></svg>
+                Recipe 02
+            </div>
+            <h2 class="ck-recipe__title">Flexbox Layout Collapses</h2>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">The Problem</span>
+                <p>The classic two-column signature layout — avatar on the left, name and contact details on the right — is trivial to build with <code>display: flex</code>. It looks perfect in every browser-based email client. In Outlook, it collapses into a single vertical column: image on top, text below.</p>
+                <p><strong>Outlook's Word engine has zero support for CSS Flexbox or Grid.</strong> It doesn't matter if you use <code>display: flex</code>, <code>display: grid</code>, or <code>align-items</code>. All of it is silently discarded.</p>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">Broken HTML</span>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--bad">Breaks in Outlook</span>
+                    </div>
+                    <pre><span class="t-tag">&lt;div</span> <span class="t-attr">style</span>=<span class="t-val">"display: flex; gap: 16px; align-items: center;"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"avatar.jpg"</span> <span class="t-attr">style</span>=<span class="t-val">"width:80px;height:80px;"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;div&gt;</span>
+    <span class="t-tag">&lt;p&gt;</span>Sarah Mitchell<span class="t-tag">&lt;/p&gt;</span>
+    <span class="t-tag">&lt;p&gt;</span>Senior Account Executive<span class="t-tag">&lt;/p&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">&lt;/div&gt;</span>
+<span class="t-cmt">&lt;!-- Flexbox ignored — both divs stack vertically --&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--fix">The Fix</span>
+                <p>Replace the flex container with an HTML <code>&lt;table role="presentation"&gt;</code>. Put the image in the first <code>&lt;td&gt;</code> with an explicit <code>width</code> attribute, and the text in the second. Use <code>valign="middle"</code> instead of <code>align-items: center</code>. Separate the columns with a thin divider cell if needed.</p>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--good">Works in Outlook</span>
+                    </div>
+                    <pre><span class="t-cmt">&lt;!--[if mso]&gt;&lt;table role="presentation" cellspacing="0" cellpadding="0"&gt;&lt;tr&gt;&lt;![endif]--&gt;</span>
+<span class="t-tag">&lt;table</span> <span class="t-attr">role</span>=<span class="t-val">"presentation"</span> <span class="t-attr">cellspacing</span>=<span class="t-val">"0"</span> <span class="t-attr">cellpadding</span>=<span class="t-val">"0"</span> <span class="t-attr">border</span>=<span class="t-val">"0"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;tr&gt;</span>
+    <span class="t-tag">&lt;td</span> <span class="t-attr">width</span>=<span class="t-val">"88"</span> <span class="t-attr">valign</span>=<span class="t-val">"middle"</span> <span class="t-attr">style</span>=<span class="t-val">"padding-right: 16px;"</span><span class="t-tag">&gt;</span>
+      <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"avatar.jpg"</span> <span class="t-attr">width</span>=<span class="t-val">"80"</span> <span class="t-attr">height</span>=<span class="t-val">"80"</span> <span class="t-attr">border</span>=<span class="t-val">"0"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;/td&gt;</span>
+    <span class="t-tag">&lt;td</span> <span class="t-attr">valign</span>=<span class="t-val">"middle"</span><span class="t-tag">&gt;</span>
+      <span class="t-tag">&lt;p</span> <span class="t-attr">style</span>=<span class="t-val">"margin:0;font-weight:bold;"</span><span class="t-tag">&gt;</span>Sarah Mitchell<span class="t-tag">&lt;/p&gt;</span>
+      <span class="t-tag">&lt;p</span> <span class="t-attr">style</span>=<span class="t-val">"margin:4px 0 0;"</span><span class="t-tag">&gt;</span>Senior Account Executive<span class="t-tag">&lt;/p&gt;</span>
+    <span class="t-tag">&lt;/td&gt;</span>
+  <span class="t-tag">&lt;/tr&gt;</span>
+<span class="t-tag">&lt;/table&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--how">How SigFix Automates It</span>
+                <p>The <strong>AI Transpiler</strong> mode detects every element with <code>display: flex</code> in the input. For each flex container with a row direction (the default), it generates a <code>&lt;table role="presentation"&gt;</code> with one <code>&lt;td&gt;</code> per child element. It calculates proportional <code>width</code> values, maps <code>gap</code> into <code>padding-right</code>, and maps <code>align-items: center</code> into <code>valign="middle"</code>. The original flex container is removed entirely.</p>
+                <a href="/" class="ck-recipe__cta">
+                    Try it in SigFix
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+        </article>
+
+        <hr class="ck-divider">
+
+        <!-- ── Recipe 3: Style block ───────────────────────── -->
+        <article class="ck-recipe" id="recipe-style-block">
+            <div class="ck-recipe__tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Recipe 03
+            </div>
+            <h2 class="ck-recipe__title">Styles in &lt;style&gt; Tag Are Ignored</h2>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">The Problem</span>
+                <p>AI code generators and modern HTML editors often produce clean, well-structured HTML with a <code>&lt;style&gt;</code> block at the top that defines all the classes used in the signature. This approach works perfectly in browsers. In Outlook, the entire <code>&lt;style&gt;</code> block is stripped before rendering.</p>
+                <p>The result: every element loses its styles. Fonts revert to the email's default. Colors disappear. Spacing collapses. The signature looks completely broken even though the HTML structure is technically correct.</p>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">Broken HTML</span>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--bad">Breaks in Outlook</span>
+                    </div>
+                    <pre><span class="t-tag">&lt;style&gt;</span>
+  <span class="t-prop">.sig-name</span>  { <span class="t-attr">font-size</span>: <span class="t-val">16px</span>; <span class="t-attr">font-weight</span>: <span class="t-val">bold</span>; <span class="t-attr">color</span>: <span class="t-val">#1a1a2e</span>; }
+  <span class="t-prop">.sig-role</span>  { <span class="t-attr">font-size</span>: <span class="t-val">13px</span>; <span class="t-attr">color</span>: <span class="t-val">#666</span>; }
+<span class="t-tag">&lt;/style&gt;</span>
+
+<span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"sig-name"</span><span class="t-tag">&gt;</span>Sarah Mitchell<span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"sig-role"</span><span class="t-tag">&gt;</span>Senior Account Executive<span class="t-tag">&lt;/div&gt;</span>
+<span class="t-cmt">&lt;!-- Outlook strips &lt;style&gt; — all classes are invisible --&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--fix">The Fix</span>
+                <p>Move every CSS rule from the <code>&lt;style&gt;</code> block directly into the <code>style=""</code> attribute of the matching HTML element. This is called <strong>CSS inlining</strong>. After inlining, the <code>&lt;style&gt;</code> tag can be removed entirely. The styles are now carried inside each element and cannot be stripped.</p>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--good">Works in Outlook</span>
+                    </div>
+                    <pre><span class="t-cmt">&lt;!-- No &lt;style&gt; block — all styles are inlined --&gt;</span>
+<span class="t-tag">&lt;div</span> <span class="t-attr">style</span>=<span class="t-val">"font-size:16px; font-weight:bold; color:#1a1a2e;"</span><span class="t-tag">&gt;</span>
+  Sarah Mitchell
+<span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">&lt;div</span> <span class="t-attr">style</span>=<span class="t-val">"font-size:13px; color:#666;"</span><span class="t-tag">&gt;</span>
+  Senior Account Executive
+<span class="t-tag">&lt;/div&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--how">How SigFix Automates It</span>
+                <p>CSS inlining is the first transformation the <strong>AI Transpiler</strong> performs. It parses every rule in every <code>&lt;style&gt;</code> block, resolves which elements match each selector using the DOM, and merges the declarations directly into those elements' <code>style</code> attributes. Specificity is handled correctly — inline styles already on the element take priority. Once inlining is complete, all <code>&lt;style&gt;</code> tags are removed from the output.</p>
+                <a href="/" class="ck-recipe__cta">
+                    Try it in SigFix
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+        </article>
+
+        <hr class="ck-divider">
+
+        <!-- ── Recipe 4: Centering ─────────────────────────── -->
+        <article class="ck-recipe" id="recipe-margin-center">
+            <div class="ck-recipe__tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                Recipe 04
+            </div>
+            <h2 class="ck-recipe__title">Centering with margin: auto Fails</h2>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">The Problem</span>
+                <p>Using <code>margin: 0 auto</code> together with <code>max-width</code> is the standard CSS approach for centering a block element. It is also one of the most reliably broken patterns in Outlook. The table or container simply ignores the centering and hugs the left edge of the email.</p>
+                <p>Outlook also misinterprets <code>max-width</code> — it either treats it as a fixed pixel width, collapses the element to zero, or simply ignores the property. Both CSS properties need to be replaced with Outlook-specific HTML attributes.</p>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--problem">Broken HTML</span>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--bad">Breaks in Outlook</span>
+                    </div>
+                    <pre><span class="t-tag">&lt;table</span>
+  <span class="t-attr">style</span>=<span class="t-val">"max-width: 520px; margin: 0 auto; border-collapse: collapse;"</span>
+<span class="t-tag">&gt;</span>
+  <span class="t-cmt">&lt;!-- Left-aligned in Outlook, margin ignored, max-width broken --&gt;</span>
+  <span class="t-tag">&lt;tr&gt;</span><span class="t-tag">&lt;td&gt;</span>...<span class="t-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="t-tag">&lt;/table&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--fix">The Fix</span>
+                <p>Replace <code>margin: 0 auto</code> with the HTML <code>align="center"</code> attribute on the table. Replace <code>max-width</code> with a fixed <code>width</code> attribute set to the desired pixel value. Remove <code>max-width</code> from the <code>style</code> attribute entirely.</p>
+                <div class="ck-code">
+                    <div class="ck-code__bar">
+                        <span class="ck-code__lang">HTML</span>
+                        <span class="ck-code__badge ck-code__badge--good">Works in Outlook</span>
+                    </div>
+                    <pre><span class="t-tag">&lt;table</span>
+  <span class="t-attr">width</span>=<span class="t-val">"520"</span>
+  <span class="t-attr">align</span>=<span class="t-val">"center"</span>
+  <span class="t-attr">border</span>=<span class="t-val">"0"</span>
+  <span class="t-attr">cellpadding</span>=<span class="t-val">"0"</span>
+  <span class="t-attr">cellspacing</span>=<span class="t-val">"0"</span>
+  <span class="t-attr">style</span>=<span class="t-val">"border-collapse: collapse;"</span>
+<span class="t-tag">&gt;</span>
+  <span class="t-cmt">&lt;!-- Centered and correctly sized in all Outlook versions --&gt;</span>
+  <span class="t-tag">&lt;tr&gt;</span><span class="t-tag">&lt;td&gt;</span>...<span class="t-tag">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="t-tag">&lt;/table&gt;</span></pre>
+                </div>
+            </div>
+
+            <div class="ck-block">
+                <span class="ck-block__label ck-block__label--how">How SigFix Automates It</span>
+                <p>The <strong>Outlook Cleaner</strong> mode targets this pattern directly. It scans all elements for <code>margin: 0 auto</code> or <code>margin: auto</code> in their inline styles and replaces it with <code>align="center"</code> on the element (or its closest table ancestor). It also removes <code>max-width</code> from inline styles and, where a numeric value is available, converts it to an HTML <code>width</code> attribute. Additional unsupported properties like <code>box-shadow</code>, <code>border-radius</code>, and <code>text-shadow</code> are stripped in the same pass.</p>
+                <a href="/" class="ck-recipe__cta">
+                    Try it in SigFix
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+        </article>
+
+    </div><!-- /ck-recipes -->
+
+
+    <!-- Footer -->
+    <footer class="lp-footer">
+        <div class="lp-container">
+            <div class="lp-footer-top">
+                <div class="lp-footer-brand">
+                    <div class="lp-footer-logo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/></svg>
+                    </div>
+                    <div>
+                        <p class="lp-footer-brand-name">SigFix</p>
+                        <p class="lp-footer-toolkit">Part of the Syntax Labs Email Toolkit</p>
+                    </div>
+                </div>
+                <nav class="lp-footer-nav">
+                    <a href="/privacy-policy">Privacy Policy</a>
+                    <a href="/terms-and-conditions">Terms of Service</a>
+                    <a href="/refund-policy">Refund Policy</a>
+                </nav>
+            </div>
+            <div class="lp-footer-bottom">
+                <p>© 2026 Spendly (Syntax Labs). All rights reserved.</p>
+                <p>Payments processed by <a href="https://paddle.com" target="_blank" rel="noopener">Paddle.com</a> · Merchant of Record</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

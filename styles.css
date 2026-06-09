@@ -954,6 +954,110 @@ textarea:focus-visible {
     margin: 16px 0 0;
 }
 
+/* ── 2b. Cookbook ───────────────────────────────────────────────────── */
+.lp-section-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 10px auto 0;
+    max-width: 520px;
+    text-align: center;
+}
+
+.cb-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.cb-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cb-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(0, 120, 212, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 120, 212, 0.15);
+}
+
+.cb-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(0, 120, 212, 0.1);
+    border: 1px solid rgba(0, 120, 212, 0.2);
+    color: #60b4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.cb-card:hover .cb-card__icon {
+    background: rgba(0, 120, 212, 0.2);
+}
+
+.cb-card__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    line-height: 1.35;
+}
+
+.cb-card__desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.65;
+    margin: 0;
+    flex: 1;
+}
+
+.cb-card__desc code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8em;
+    color: #79c0ff;
+    background: rgba(121, 192, 255, 0.1);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+.cb-card__cta {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgba(0, 120, 212, 0.7);
+    margin-top: auto;
+    transition: color 0.2s ease;
+}
+
+.cb-card:hover .cb-card__cta {
+    color: #60b4ff;
+}
+
+@media (max-width: 1023px) {
+    .cb-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 639px) {
+    .cb-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ── 5. Security ────────────────────────────────────────────────────── */
 .lp-security {
     background: rgba(0, 0, 0, 0.15);
