@@ -1,0 +1,330 @@
+/* Shared content container (header + main) */
+.app-container,
+.app-shell {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.app-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* Full-width header bar */
+.app-header {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+@media (min-width: 1024px) {
+    .app-container,
+    .app-shell {
+        max-width: 1200px;
+    }
+}
+
+/* Custom glassmorphic effects and animations */
+.glass-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth tab indicator animation */
+#tab-indicator {
+    box-shadow: 0 4px 20px rgba(0, 120, 212, 0.3);
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Drag and drop styles */
+.drag-over {
+    border-color: rgba(0, 120, 212, 0.5) !important;
+    background: rgba(0, 120, 212, 0.1) !important;
+}
+
+/* Button glow effect */
+.btn-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 120, 212, 0.4);
+}
+
+/* Fade transitions */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* Pulse animation for privacy indicator */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ─── Clean HTML Code panel ─────────────────────────────────────────────── */
+
+.code-panel {
+    background: linear-gradient(
+        160deg,
+        rgba(8, 12, 20, 0.95) 0%,
+        rgba(11, 15, 23, 0.98) 100%
+    );
+}
+
+.code-output,
+#code-output {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12px;
+    line-height: 1.75;
+    tab-size: 2;
+    color: #b8c0cc;
+    margin: 0;
+    padding: 1.25rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+        rgba(0, 0, 0, 0.35);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Syntax highlighting tokens */
+.token-tag {
+    color: #79c0ff;
+    font-weight: 500;
+}
+
+.token-attr {
+    color: #ffa657;
+}
+
+.token-value {
+    color: #7ee787;
+}
+
+.token-comment {
+    color: #6e7681;
+    font-style: italic;
+}
+
+/* Scrollable areas inside the right output panel */
+#signature-preview,
+#code-output,
+#outlook-preview .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Selection styling */
+::selection {
+    background: rgba(0, 120, 212, 0.3);
+    color: white;
+}
+
+::-moz-selection {
+    background: rgba(0, 120, 212, 0.3);
+    color: white;
+}
+
+#code-output::selection,
+#code-output *::selection {
+    background: rgba(0, 120, 212, 0.45);
+    color: #ffffff;
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid rgba(0, 120, 212, 0.5);
+    outline-offset: 2px;
+}
+
+/* ─── Responsive: tablet & mobile (< 1024px) ───────────────────────────── */
+
+/* Short labels hidden on desktop */
+.privacy-badge__short,
+.mode-tab-label-short {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    body {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: auto;
+        min-height: 100dvh;
+    }
+
+    .app-layout {
+        height: auto;
+        min-height: 100dvh;
+    }
+
+    .app-shell {
+        height: auto;
+    }
+
+    .app-panels {
+        flex: none;
+        overflow: visible;
+    }
+
+    .panel-input {
+        min-height: 50dvh;
+        flex: none;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .panel-output {
+        min-height: 55dvh;
+        flex: none;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* ─── Responsive: tablet portrait (< 768px) ────────────────────────────── */
+
+@media (max-width: 767px) {
+    .mode-tab-label-full {
+        display: none;
+    }
+
+    .mode-tab-label-short {
+        display: inline;
+    }
+}
+
+/* ─── Responsive: mobile (< 640px) ─────────────────────────────────────── */
+
+@media (max-width: 639px) {
+    .privacy-badge__full {
+        display: none;
+    }
+
+    .privacy-badge__short {
+        display: inline;
+    }
+
+    .mode-tab {
+        min-height: 44px;
+    }
+
+    .output-tab {
+        min-height: 44px;
+    }
+
+    #fix-signature {
+        min-height: 48px;
+    }
+
+    .copy-actions button {
+        min-height: 44px;
+    }
+
+    #load-template {
+        min-height: 44px;
+        width: 100%;
+        max-width: 220px;
+    }
+
+    .code-output,
+    #code-output {
+        font-size: 11px;
+        padding: 0.875rem 1rem;
+    }
+
+    #outlook-preview .bg-white.p-4 {
+        padding: 0.75rem;
+    }
+
+    #email-content {
+        font-size: 0.8125rem;
+    }
+}
+
+/* ─── Responsive: small phones (< 380px) ───────────────────────────────── */
+
+@media (max-width: 379px) {
+    .output-tab {
+        font-size: 0.6875rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .mode-tab {
+        font-size: 0.625rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+
+/* Loading animation for buttons */
+.loading {
+    pointer-events: none;
+}
+
+/* Enhanced glassmorphic effect for panels */
+.enhanced-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}

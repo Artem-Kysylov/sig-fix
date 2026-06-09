@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SigFix - Outlook Signature Utility</title>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'obsidian': '#0B0F17',
+                        'outlook-blue': '#0078D4',
+                        'outlook-light-blue': '#106EBE',
+                        'glass': 'rgba(255, 255, 255, 0.05)',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-inter bg-obsidian text-white lg:overflow-hidden lg:h-screen">
+    <div class="app-layout flex flex-col min-h-dvh lg:h-screen w-full">
+        <!-- Global Header — full-width background, content in container -->
+        <header class="app-header shrink-0 w-full border-b border-white/10 enhanced-glass">
+            <div class="app-container px-4 sm:px-6 py-3 sm:py-4">
+            <div class="app-header__inner flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-outlook-blue rounded-lg flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="text-lg sm:text-xl font-semibold">SigFix</h1>
+                        <p class="text-xs text-white/60 truncate">sigfix.syntaxlabs.io</p>
+                    </div>
+                </div>
+                <div class="privacy-badge flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 self-start sm:self-auto">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
+                    <span class="privacy-badge__full text-xs text-green-400 font-medium">Local-only / No Server Needed</span>
+                    <span class="privacy-badge__short text-xs text-green-400 font-medium">Local-only</span>
+                </div>
+            </div>
+            </div>
+        </header>
+
+        <!-- Main Content: 50/50 Split (stacked on mobile) -->
+        <div class="app-shell flex flex-col flex-1 min-h-0 w-full">
+        <div class="app-panels flex flex-col lg:flex-row flex-1 min-h-0">
+        <!-- LEFT PANEL - Input & Controls -->
+        <div class="panel-input w-full lg:w-1/2 flex flex-col lg:border-r border-white/10 min-h-0">
+            <!-- Mode Switcher -->
+            <div class="panel-section p-4 sm:p-6 sm:pb-4">
+                <div class="mode-switcher bg-white/5 p-1 rounded-xl border border-white/10">
+                    <div class="flex relative">
+                        <div id="tab-indicator" class="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/3)] bg-outlook-blue rounded-lg transition-transform duration-300 ease-out"></div>
+                        <button id="tab-ai" class="mode-tab relative z-10 flex-1 py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium text-white rounded-lg transition-colors duration-200">
+                            <span class="mode-tab-label-full">AI Transpiler</span>
+                            <span class="mode-tab-label-short">AI</span>
+                        </button>
+                        <button id="tab-cleaner" class="mode-tab relative z-10 flex-1 py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium text-white/60 rounded-lg transition-colors duration-200">
+                            <span class="mode-tab-label-full">Outlook Cleaner</span>
+                            <span class="mode-tab-label-short">Cleaner</span>
+                        </button>
+                        <button id="tab-extractor" class="mode-tab relative z-10 flex-1 py-2.5 px-2 sm:px-4 text-xs sm:text-sm font-medium text-white/60 rounded-lg transition-colors duration-200">
+                            <span class="mode-tab-label-full">Signature Extractor</span>
+                            <span class="mode-tab-label-short">Extract</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="panel-section flex-1 px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col min-h-[280px] lg:min-h-0">
+                <div class="flex-1 bg-white/5 rounded-xl border border-white/10 p-3 sm:p-4 relative overflow-hidden min-h-[220px]">
+                    <!-- Dropzone when empty -->
+                    <div id="dropzone" class="absolute inset-3 sm:inset-4 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center text-center px-4 transition-all duration-200 hover:border-white/30 hover:bg-white/5">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 text-white/40 mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        <h3 class="text-base sm:text-lg font-medium text-white/80 mb-1 sm:mb-2" id="dropzone-title">Drop HTML file here</h3>
+                        <p class="text-xs sm:text-sm text-white/60 mb-3 sm:mb-4" id="dropzone-subtitle">Or paste your signature code</p>
+                        <button id="load-template" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors duration-200 border border-white/20">
+                            Load Test Template
+                        </button>
+                    </div>
+                    
+                    <!-- Text Area -->
+                    <textarea 
+                        id="input-text" 
+                        class="w-full h-full bg-transparent text-white placeholder-white/40 resize-none outline-none text-sm font-mono leading-relaxed hidden"
+                        placeholder="Paste your HTML signature code here..."
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="panel-section px-4 sm:px-6 pb-4 sm:pb-6">
+                <button id="fix-signature" class="w-full bg-outlook-blue hover:bg-outlook-light-blue text-white font-semibold py-3.5 sm:py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                    <span id="fix-button-text">Fix Signature</span>
+                    <div id="fix-button-loader" class="hidden flex items-center justify-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - Outlook Preview & Output -->
+        <div class="panel-output w-full lg:w-1/2 flex flex-col min-h-0 overflow-hidden">
+            <!-- Output Tabs -->
+            <div class="panel-section shrink-0 px-4 sm:px-6 pt-4 sm:pt-6 pb-0">
+                <div class="output-tabs flex border-b border-white/10">
+                    <button id="preview-tab" class="output-tab flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-white border-b-2 border-outlook-blue text-center sm:text-left">
+                        Outlook Live View
+                    </button>
+                    <button id="code-tab" class="output-tab flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-white/60 border-b-2 border-transparent hover:text-white transition-colors duration-200 text-center sm:text-left">
+                        Clean HTML Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Area -->
+            <div class="panel-section flex-1 min-h-[320px] lg:min-h-0 px-4 sm:px-6 pt-3 sm:pt-4 pb-4 sm:pb-0 flex flex-col">
+                <div class="flex-1 min-h-0 bg-white/5 rounded-xl border border-white/10 overflow-hidden flex flex-col">
+                    <!-- Outlook Live View -->
+                    <div id="outlook-preview" class="flex-1 min-h-0 flex flex-col overflow-hidden">
+                        <!-- Fake Outlook Header -->
+                        <div class="shrink-0 bg-outlook-blue px-4 py-2 flex items-center justify-between text-white text-sm">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-6 h-6 bg-white/20 rounded"></div>
+                                <span class="font-medium">Microsoft Outlook</span>
+                            </div>
+                            <span id="preview-status" class="hidden"></span>
+                        </div>
+                        
+                        <!-- Fake Email Fields -->
+                        <div class="shrink-0 bg-white text-gray-800 border-b border-gray-200 p-4 space-y-2">
+                            <div class="flex items-center space-x-2 text-sm">
+                                <span class="font-medium text-gray-600 w-12">To:</span>
+                                <span>recipient@example.com</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm">
+                                <span class="font-medium text-gray-600 w-12">Subject:</span>
+                                <span>Email with signature preview</span>
+                            </div>
+                        </div>
+
+                        <!-- Email Content Area -->
+                        <div class="flex-1 min-h-0 bg-white p-4 overflow-y-auto">
+                            <div id="email-content" class="text-gray-800 text-sm leading-relaxed">
+                                <p>Hi there,</p>
+                                <br>
+                                <p>This is a test email to preview your signature.</p>
+                                <br>
+                                <p>Best regards,</p>
+                                <br>
+                                <!-- Signature will appear here -->
+                                <div id="signature-preview" class="border-t border-gray-300 pt-4 mt-4 empty:hidden">
+                                    <!-- Processed signature content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HTML Code View -->
+                    <div id="code-preview" class="code-panel flex-1 min-h-0 flex flex-col p-4 hidden overflow-hidden">
+                        <pre id="code-output" class="code-output flex-1 min-h-0 overflow-y-auto whitespace-pre-wrap"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="panel-section shrink-0 px-4 sm:px-6 pb-4 sm:pb-6">
+                <div class="copy-actions flex flex-col sm:flex-row gap-2 sm:gap-3 sm:space-x-0">
+                    <button id="copy-html" class="flex-1 bg-white/10 hover:bg-white/20 text-white/60 font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed text-sm" disabled>
+                        Copy Outlook-Safe Code
+                    </button>
+                    <button id="copy-rich" class="flex-1 bg-white/10 hover:bg-white/20 text-white/60 font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed text-sm" disabled>
+                        Copy Rich Text
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
