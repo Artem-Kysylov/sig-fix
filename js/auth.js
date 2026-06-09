@@ -30,6 +30,12 @@ const provider = new GoogleAuthProvider();
 
 window.user = null;
 
+const checkProStatus = async (uid) => {
+  const snapshot = await getDoc(doc(db, "users", uid));
+  if (!snapshot.exists()) return false;
+  return snapshot.data().isPro === true;
+};
+
 const saveUserToFirestore = async (user) => {
   const userRef = doc(db, "users", user.uid);
   const snapshot = await getDoc(userRef);
@@ -48,10 +54,21 @@ const saveUserToFirestore = async (user) => {
   await setDoc(userRef, userData, { merge: true });
 };
 
+const buildUserSession = async (user) => {
+  const isPro = await checkProStatus(user.uid);
+  return {
+    uid: user.uid,
+    email: user.email,
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+    isPro,
+  };
+};
+
 export const loginWithGoogle = async () => {
   const result = await signInWithPopup(auth, provider);
   await saveUserToFirestore(result.user);
-  return result.user;
+  return buildUserSession(result.user);
 };
 
 export const logoutUser = async () => {
@@ -62,18 +79,12 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     try {
       await saveUserToFirestore(user);
+      window.user = await buildUserSession(user);
+      console.log("User logged in:", window.user.email);
+      document.dispatchEvent(new CustomEvent("authChanged", { detail: window.user }));
     } catch (error) {
-      console.error("Failed to save user to Firestore:", error);
+      console.error("Failed to sync user with Firestore:", error);
     }
-
-    window.user = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-    };
-    console.log("User logged in:", window.user.email);
-    document.dispatchEvent(new CustomEvent("authChanged", { detail: window.user }));
   } else {
     window.user = null;
     console.log("User logged out");
