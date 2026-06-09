@@ -11,6 +11,7 @@ import {
   flashCopySuccess,
   setPreviewStatus,
 } from './ui.js';
+import { loginWithGoogle, logoutUser } from './auth.js';
 
 // ─── DOM element references ─────────────────────────────────────────────────
 
@@ -45,8 +46,16 @@ const els = {
   previewStatus:    document.getElementById('preview-status'),
 
   // Copy buttons
-  copyHtmlBtn:      document.getElementById('copy-html'),
-  copyRichBtn:      document.getElementById('copy-rich'),
+  copyHtmlBtn:          document.getElementById('copy-html'),
+  copyRichBtn:          document.getElementById('copy-rich'),
+
+  // Pricing CTA
+  lifetimeAccessBtn:    document.getElementById('lifetime-access-btn'),
+
+  // Header auth
+  headerUserMenu:       document.getElementById('header-user-menu'),
+  headerUserAvatar:     document.getElementById('header-user-avatar'),
+  headerSignOutBtn:     document.getElementById('header-sign-out'),
 };
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
@@ -345,6 +354,57 @@ const setupMobileHandlers = () => {
   }, { passive: false });
 };
 
+// ─── Header auth UI ──────────────────────────────────────────────────────────
+
+const updateHeaderAuth = (user) => {
+  const { headerUserMenu, headerUserAvatar } = els;
+  if (!headerUserMenu || !headerUserAvatar) return;
+
+  if (user) {
+    headerUserAvatar.src = user.photoURL ?? '';
+    headerUserAvatar.alt = user.displayName ?? user.email ?? 'User avatar';
+    headerUserMenu.classList.remove('hidden');
+    headerUserMenu.setAttribute('aria-hidden', 'false');
+    return;
+  }
+
+  headerUserAvatar.src = '';
+  headerUserAvatar.alt = '';
+  headerUserMenu.classList.add('hidden');
+  headerUserMenu.setAttribute('aria-hidden', 'true');
+};
+
+const handleSignOut = async () => {
+  try {
+    await logoutUser();
+  } catch (error) {
+    console.error('Sign out failed:', error);
+    showNotification('Failed to sign out', 'error');
+  }
+};
+
+// ─── Pricing CTA — Google auth gate ─────────────────────────────────────────
+
+const handleLifetimeAccessClick = async (e) => {
+  e.preventDefault();
+
+  if (!window.user) {
+    const btn = els.lifetimeAccessBtn;
+    const originalText = btn.textContent;
+    btn.textContent = 'Connecting...';
+
+    try {
+      const loggedUser = await loginWithGoogle();
+      btn.textContent = originalText;
+      alert(`Authenticated as ${loggedUser.email}. Next step: Paddle Checkout!`);
+    } catch {
+      btn.textContent = originalText;
+    }
+  } else {
+    alert(`Already authenticated as ${window.user.email}. Triggering Paddle...`);
+  }
+};
+
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 const init = () => {
@@ -373,6 +433,14 @@ const init = () => {
   els.fixButton.addEventListener('click',    processSignature);
   els.copyHtmlBtn.addEventListener('click', () => copyToClipboard('html'));
   els.copyRichBtn.addEventListener('click', () => copyToClipboard('rich'));
+
+  // Pricing CTA
+  els.lifetimeAccessBtn?.addEventListener('click', handleLifetimeAccessClick);
+
+  // Header auth
+  els.headerSignOutBtn?.addEventListener('click', handleSignOut);
+  document.addEventListener('authChanged', (e) => updateHeaderAuth(e.detail));
+  updateHeaderAuth(window.user);
 
   setupDragAndDrop();
   setupFileInput();

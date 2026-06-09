@@ -44,6 +44,37 @@ html {
     color: #0078D4;
 }
 
+.header-user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-user-menu__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.header-user-menu__sign-out {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.header-user-menu__sign-out:hover {
+    color: #0078D4;
+}
+
 /* Anchor scroll offset — keeps section titles below the sticky header */
 #pricing,
 #faq {
@@ -785,20 +816,6 @@ textarea:focus-visible {
     color: rgba(255, 255, 255, 0.3);
 }
 
-.lp-pricing-cta--outline {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.6);
-    margin-top: auto;
-}
-
-.lp-pricing-cta--outline:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.35);
-    color: rgba(255, 255, 255, 0.85);
-    transform: none;
-}
-
 /* ── Lifetime Access (premium) ──────────────────────────────────────── */
 .lp-pricing-card--pro {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
@@ -946,6 +963,20 @@ textarea:focus-visible {
 .lp-pricing-cta:hover {
     background: #106EBE;
     transform: translateY(-1px);
+}
+
+.lp-pricing-cta--outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: auto;
+}
+
+.lp-pricing-cta--outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.85);
+    transform: none;
 }
 
 .lp-pricing-footer {
