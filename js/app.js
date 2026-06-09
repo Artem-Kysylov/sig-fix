@@ -13,6 +13,11 @@ import {
 } from './ui.js';
 import { loginWithGoogle, logoutUser } from './auth.js';
 
+// ─── Paddle v3 setup ─────────────────────────────────────────────────────────
+
+Paddle.Environment.set('sandbox');
+Paddle.Initialize({ token: 'test_17d88feed3e3e6f507c557e5e39' });
+
 // ─── DOM element references ─────────────────────────────────────────────────
 
 const els = {
@@ -383,25 +388,49 @@ const handleSignOut = async () => {
   }
 };
 
+// ─── Paddle checkout ─────────────────────────────────────────────────────────
+
+const openPaddleCheckout = () => {
+  if (!window.user) {
+    console.error('Cannot open checkout: user is not authenticated.');
+    return;
+  }
+
+  Paddle.Checkout.open({
+    items: [{ priceId: 'pri_01ktphzt9v6f257v3zgdfdx45m', quantity: 1 }],
+    customer: { email: window.user.email },
+    customData: { firebaseUID: window.user.uid },
+    settings: {
+      displayMode: 'overlay',
+      theme: 'dark',
+      locale: 'en',
+    },
+  });
+};
+
 // ─── Pricing CTA — Google auth gate ─────────────────────────────────────────
 
 const handleLifetimeAccessClick = async (e) => {
   e.preventDefault();
 
-  if (!window.user) {
-    const btn = els.lifetimeAccessBtn;
-    const originalText = btn.textContent;
-    btn.textContent = 'Connecting...';
+  const btn = els.lifetimeAccessBtn;
+  const originalText = btn.textContent;
 
+  if (!window.user) {
+    btn.textContent = 'Connecting...';
     try {
-      const loggedUser = await loginWithGoogle();
-      btn.textContent = originalText;
-      alert(`Authenticated as ${loggedUser.email}. Next step: Paddle Checkout!`);
+      await loginWithGoogle();
     } catch {
       btn.textContent = originalText;
+      return;
     }
-  } else {
-    alert(`Already authenticated as ${window.user.email}. Triggering Paddle...`);
+  }
+
+  btn.textContent = 'Opening...';
+  try {
+    openPaddleCheckout();
+  } finally {
+    btn.textContent = originalText;
   }
 };
 
