@@ -15,8 +15,18 @@ import { loginWithGoogle, logoutUser } from './auth.js';
 
 // ─── Paddle v3 setup ─────────────────────────────────────────────────────────
 
-Paddle.Environment.set('sandbox');
-Paddle.Initialize({ token: 'test_17d88feed3e3e6f507c557e5e39' });
+const initPaddle = () => {
+  if (typeof Paddle === 'undefined') {
+    console.error('Paddle SDK not loaded.');
+    return false;
+  }
+
+  Paddle.Environment.set('sandbox');
+  Paddle.Initialize({ token: 'test_17d88feed3e3e6f507c557e5e39' });
+  return true;
+};
+
+let paddleReady = false;
 
 // ─── DOM element references ─────────────────────────────────────────────────
 
@@ -55,7 +65,7 @@ const els = {
   copyRichBtn:          document.getElementById('copy-rich'),
 
   // Pricing CTA
-  lifetimeAccessBtn:    document.getElementById('lifetime-access-btn'),
+  lifetimeAccessBtn:    null,
 
   // Header auth
   headerUserMenu:       document.getElementById('header-user-menu'),
@@ -390,16 +400,21 @@ const handleSignOut = async () => {
 
 // ─── Paddle checkout ─────────────────────────────────────────────────────────
 
-const openPaddleCheckout = () => {
-  if (!window.user) {
-    console.error('Cannot open checkout: user is not authenticated.');
+const openPaddleCheckout = (user = window.user) => {
+  if (!paddleReady) {
+    showNotification('Checkout is unavailable right now. Please refresh and try again.', 'error');
+    return;
+  }
+
+  if (!user?.email) {
+    showNotification('Please sign in to continue', 'warning');
     return;
   }
 
   Paddle.Checkout.open({
     items: [{ priceId: 'pri_01ktphzt9v6f257v3zgdfdx45m', quantity: 1 }],
-    customer: { email: window.user.email },
-    customData: { firebaseUID: window.user.uid },
+    customer: { email: user.email },
+    customData: { firebaseUID: user.uid },
     settings: {
       displayMode: 'overlay',
       theme: 'dark',
@@ -410,26 +425,34 @@ const openPaddleCheckout = () => {
 
 // ─── Pricing CTA — Google auth gate ─────────────────────────────────────────
 
-const handleLifetimeAccessClick = async (e) => {
-  e.preventDefault();
-
+const handleLifetimeAccessClick = async () => {
   const btn = els.lifetimeAccessBtn;
-  const originalText = btn.textContent;
+  if (!btn) return;
 
-  if (!window.user) {
+  const originalText = btn.textContent;
+  let user = window.user;
+
+  if (!user) {
     btn.textContent = 'Connecting...';
+    btn.disabled = true;
     try {
-      await loginWithGoogle();
-    } catch {
-      btn.textContent = originalText;
+      user = await loginWithGoogle();
+    } catch (error) {
+      console.error('Google sign-in failed:', error);
+      showNotification('Sign-in was cancelled or failed', 'error');
       return;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
     }
   }
 
   btn.textContent = 'Opening...';
+  btn.disabled = true;
   try {
-    openPaddleCheckout();
+    openPaddleCheckout(user);
   } finally {
+    btn.disabled = false;
     btn.textContent = originalText;
   }
 };
@@ -437,6 +460,10 @@ const handleLifetimeAccessClick = async (e) => {
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 const init = () => {
+  paddleReady = initPaddle();
+
+  els.lifetimeAccessBtn = document.getElementById('lifetime-access-btn');
+
   // Left panel: mode tabs
   els.tabAI.addEventListener('click',        () => switchMode('ai'));
   els.tabCleaner.addEventListener('click',   () => switchMode('cleaner'));
