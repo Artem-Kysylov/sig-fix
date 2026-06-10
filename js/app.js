@@ -96,6 +96,12 @@ const els = {
   headerUserMenu:       document.getElementById('header-user-menu'),
   headerUserAvatar:     document.getElementById('header-user-avatar'),
   headerSignOutBtn:     document.getElementById('header-sign-out'),
+  headerSignInBtn:      document.getElementById('header-signin-btn'),
+  headerUserBlock:      document.getElementById('header-user-block'),
+  headerUserEmail:      document.getElementById('header-user-email'),
+  headerLogoutBtn:      document.getElementById('header-logout-btn'),
+  pricingSignInBtn:     document.getElementById('pricing-signin-btn'),
+  pricingRestore:       document.getElementById('pricing-pro-restore'),
 };
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
@@ -278,70 +284,9 @@ const setupFileInput = () => {
   });
 };
 
-// ─── Free usage limits ───────────────────────────────────────────────────────
+// ─── Export paywall ──────────────────────────────────────────────────────────
 
-const FREE_DAILY_LIMIT = 3;
-const USAGE_STORAGE_KEY = 'sigfix_free_usage';
-
-const getTodayString = () => {
-  return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-};
-
-const getFreeUsageCount = () => {
-  try {
-    const stored = localStorage.getItem(USAGE_STORAGE_KEY);
-    if (!stored) return { count: 0, date: getTodayString() };
-    
-    const usage = JSON.parse(stored);
-    const today = getTodayString();
-    
-    // Reset counter if date changed
-    if (usage.date !== today) {
-      return { count: 0, date: today };
-    }
-    
-    return usage;
-  } catch {
-    return { count: 0, date: getTodayString() };
-  }
-};
-
-const incrementFreeUsage = () => {
-  const today = getTodayString();
-  const current = getFreeUsageCount();
-  
-  const updated = {
-    count: current.date === today ? current.count + 1 : 1,
-    date: today,
-  };
-  
-  try {
-    localStorage.setItem(USAGE_STORAGE_KEY, JSON.stringify(updated));
-  } catch (error) {
-    console.error('Failed to save usage count:', error);
-  }
-  
-  return updated;
-};
-
-const updateUsageUI = () => {
-  const usageInfo = document.getElementById('usage-info');
-  if (!usageInfo) return;
-  
-  const isProUser = window.user?.isPro === true;
-  
-  if (isProUser) {
-    usageInfo.textContent = 'Pro Account — Unlimited Access';
-    usageInfo.className = 'usage-info usage-info--pro';
-  } else {
-    const usage = getFreeUsageCount();
-    const remaining = Math.max(0, FREE_DAILY_LIMIT - usage.count);
-    usageInfo.textContent = `Free fixes left today: ${remaining}/${FREE_DAILY_LIMIT}`;
-    usageInfo.className = `usage-info ${remaining === 0 ? 'usage-info--exhausted' : ''}`;
-  }
-};
-
-const showLimitReachedModal = () => {
+const showExportPaywallModal = () => {
   // Create modal HTML
   const modal = document.createElement('div');
   modal.className = 'limit-modal';
@@ -350,15 +295,16 @@ const showLimitReachedModal = () => {
     <div class="limit-modal__content">
       <div class="limit-modal__icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 6v6l4 2"/>
+          <rect x="3" y="11" width="18" height="10" rx="2" ry="2"/>
+          <circle cx="12" cy="16" r="1"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       </div>
-      <h3 class="limit-modal__title">Daily Limit Reached</h3>
-      <p class="limit-modal__text">You've used all <strong>3 free fixes</strong> for today. Upgrade to Lifetime Pro for unlimited signature fixes!</p>
+      <h3 class="limit-modal__title">Your signature is ready!</h3>
+      <p class="limit-modal__text">Unlock <strong>Lifetime Pro ($14)</strong> to copy the Outlook-safe HTML or Rich Text directly to your clipboard.</p>
       <div class="limit-modal__actions">
         <button class="limit-modal__btn limit-modal__btn--primary" id="modal-upgrade-btn">
-          Upgrade to Pro
+          Unlock Pro ($14)
         </button>
         <button class="limit-modal__btn limit-modal__btn--secondary" id="modal-close-btn">
           Maybe Later
@@ -383,15 +329,10 @@ const showLimitReachedModal = () => {
     }, 300);
   };
   
-  const scrollToPricing = () => {
-    const pricingSection = document.getElementById('pricing');
-    if (pricingSection) {
-      pricingSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  upgradeBtn.addEventListener('click', () => {
+    initiateUpgradeFlow();
     closeModal();
-  };
-  
-  upgradeBtn.addEventListener('click', scrollToPricing);
+  });
   closeBtn.addEventListener('click', closeModal);
   backdrop.addEventListener('click', closeModal);
   
@@ -410,6 +351,59 @@ const showLimitReachedModal = () => {
   }, 10);
 };
 
+const initiateUpgradeFlow = async () => {
+  let user = window.user;
+
+  if (!user) {
+    try {
+      user = await loginWithGoogle();
+    } catch (error) {
+      console.error('Google sign-in failed:', error);
+      showNotification('Sign-in was cancelled or failed', 'error');
+      return;
+    }
+  }
+
+  openPaddleCheckout(user);
+};
+
+const updateCopyButtonsUI = () => {
+  const { copyHtmlBtn, copyRichBtn } = els;
+  if (!copyHtmlBtn || !copyRichBtn) return;
+
+  const isProUser = window.user?.isPro === true;
+
+  if (isProUser) {
+    copyHtmlBtn.innerHTML = 'Copy Outlook-Safe Code';
+    copyRichBtn.innerHTML = 'Copy Rich Text';
+  } else {
+    copyHtmlBtn.innerHTML = '🔒 Copy Outlook-Safe Code [PRO]';
+    copyRichBtn.innerHTML = '🔒 Copy Rich Text [PRO]';
+  }
+};
+
+const updateAuthUI = (user) => {
+  const { 
+    headerSignInBtn, 
+    headerUserBlock, 
+    headerUserEmail, 
+    pricingRestore 
+  } = els;
+
+  if (user) {
+    // User is logged in
+    if (headerSignInBtn) headerSignInBtn.style.display = 'none';
+    if (headerUserBlock) headerUserBlock.style.display = 'flex';
+    if (headerUserEmail) headerUserEmail.textContent = user.email;
+    if (pricingRestore) pricingRestore.style.display = 'none';
+  } else {
+    // User is logged out
+    if (headerSignInBtn) headerSignInBtn.style.display = 'inline-block';
+    if (headerUserBlock) headerUserBlock.style.display = 'none';
+    if (pricingRestore) pricingRestore.style.display = 'block';
+  }
+};
+
 // ─── Signature processing ────────────────────────────────────────────────────
 
 /**
@@ -425,19 +419,6 @@ const processSignature = async () => {
   if (!hasContent) {
     showNotification('Please add some content first', 'warning');
     return;
-  }
-
-  // Check Pro status and usage limits
-  const isProUser = window.user?.isPro === true;
-
-  if (!isProUser) {
-    const usage = getFreeUsageCount();
-    
-    // If limit exhausted
-    if (usage.count >= FREE_DAILY_LIMIT) {
-      showLimitReachedModal();
-      return; // Block execution
-    }
   }
 
   // Mint a new token — this automatically cancels any prior in-flight run.
@@ -465,12 +446,6 @@ const processSignature = async () => {
     setCopyButtonsEnabled(els, true);
     setPreviewStatus(els.previewStatus, 'fixed');
     showNotification('Signature processed successfully!', 'success');
-    
-    // Increment usage counter for free users after successful processing
-    if (!isProUser) {
-      incrementFreeUsage();
-      updateUsageUI();
-    }
   } catch (error) {
     if (token !== activeToken) return;
     console.error('Processing error:', error);
@@ -496,6 +471,14 @@ const processSignature = async () => {
  *         rich text, preserving formatting, links, and embedded images.
  */
 const copyToClipboard = async (type) => {
+  // Check Pro status - paywall for export
+  const isProUser = window.user?.isPro === true;
+
+  if (!isProUser) {
+    showExportPaywallModal();
+    return;
+  }
+
   const { processedContent } = getState();
 
   if (!processedContent) {
@@ -699,6 +682,12 @@ const handleLifetimeAccessClick = async () => {
 const init = () => {
   els.lifetimeAccessBtn = document.getElementById('lifetime-access-btn');
   els.proLifetimeBadge = document.getElementById('pro-lifetime-badge');
+  els.headerSignInBtn = document.getElementById('header-signin-btn');
+  els.headerUserBlock = document.getElementById('header-user-block');
+  els.headerUserEmail = document.getElementById('header-user-email');
+  els.headerLogoutBtn = document.getElementById('header-logout-btn');
+  els.pricingSignInBtn = document.getElementById('pricing-signin-btn');
+  els.pricingRestore = document.getElementById('pricing-pro-restore');
 
   // Left panel: mode tabs
   els.tabAI.addEventListener('click',        () => switchMode('ai'));
@@ -729,16 +718,49 @@ const init = () => {
   // Pricing CTA
   els.lifetimeAccessBtn?.addEventListener('click', handleLifetimeAccessClick);
 
-  // Header auth + Pro pricing + Usage UI
+  // Auth event handlers
+  els.headerSignInBtn?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await loginWithGoogle();
+    } catch (error) {
+      console.error('Header sign-in failed:', error);
+      showNotification('Sign-in was cancelled or failed', 'error');
+    }
+  });
+
+  els.headerLogoutBtn?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error('Sign out failed:', error);
+      showNotification('Failed to sign out', 'error');
+    }
+  });
+
+  els.pricingSignInBtn?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await loginWithGoogle();
+    } catch (error) {
+      console.error('Pricing sign-in failed:', error);
+      showNotification('Sign-in was cancelled or failed', 'error');
+    }
+  });
+
+  // Header auth + Pro pricing + Copy buttons + Auth UI
   els.headerSignOutBtn?.addEventListener('click', handleSignOut);
   document.addEventListener('authChanged', (e) => {
     updateHeaderAuth(e.detail);
     updateProPricingUI(e.detail);
-    updateUsageUI();
+    updateCopyButtonsUI();
+    updateAuthUI(e.detail);
   });
   updateHeaderAuth(window.user);
   updateProPricingUI(window.user);
-  updateUsageUI();
+  updateCopyButtonsUI();
+  updateAuthUI(window.user);
 
   setupDragAndDrop();
   setupFileInput();

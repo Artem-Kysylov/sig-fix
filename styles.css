@@ -62,6 +62,27 @@ html {
     color: #0078D4;
 }
 
+.header-user-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-user-email {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.header-nav__link--logout {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.header-nav__link--logout:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
 .header-user-menu {
     display: flex;
     align-items: center;
@@ -122,23 +143,18 @@ html {
     text-align: center;
 }
 
-/* Usage info under fix button */
-.usage-info {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
-    margin-top: 8px;
-    text-align: center;
-    transition: color 0.2s ease;
+/* Copy buttons with Pro indicators */
+.copy-actions button {
+    position: relative;
 }
 
-.usage-info--pro {
-    color: rgba(76, 175, 80, 0.8);
-    font-weight: 500;
+.copy-actions button:not([disabled]) {
+    cursor: pointer;
 }
 
-.usage-info--exhausted {
-    color: rgba(255, 152, 0, 0.8);
-    font-weight: 500;
+.copy-actions button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 /* Limit reached modal */
@@ -1137,6 +1153,24 @@ textarea:focus-visible {
     cursor: default;
 }
 
+.pricing-restore-link {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.pricing-restore-link a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+}
+
+.pricing-restore-link a:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
 .lp-pricing-badge {
     display: inline-block;
     background: rgba(0, 120, 212, 0.15);
@@ -1668,5 +1702,19 @@ textarea:focus-visible {
     .lp-footer-bottom {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .header-user-block {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+    }
+
+    .header-user-email {
+        font-size: 0.7rem;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }

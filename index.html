@@ -63,7 +63,12 @@
                     <nav class="header-nav" aria-label="Page sections">
                         <a href="#pricing" class="header-nav__link">Pricing</a>
                         <a href="#faq" class="header-nav__link">FAQ</a>
+                        <a href="#" id="header-signin-btn" class="header-nav__link">Sign in</a>
                     </nav>
+                    <div id="header-user-block" class="header-user-block" style="display: none;">
+                        <span id="header-user-email" class="header-user-email"></span>
+                        <a href="#" id="header-logout-btn" class="header-nav__link header-nav__link--logout">(Sign out)</a>
+                    </div>
                     <div class="privacy-badge flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
                         <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
                         <span class="privacy-badge__full text-xs text-green-400 font-medium">Local-only / No Server Needed</span>
@@ -153,7 +158,6 @@
                         Processing...
                     </div>
                 </button>
-                <p id="usage-info" class="usage-info mt-2 text-center text-xs text-white/40">Free fixes left today: 3/3</p>
             </div>
         </div>
 
@@ -478,6 +482,9 @@
                         <div class="lp-pricing-cta-wrap">
                             <button type="button" id="lifetime-access-btn" class="lp-pricing-cta">Get Lifetime Access</button>
                             <span id="pro-lifetime-badge" class="lp-pro-lifetime-badge hidden" aria-hidden="true">🏆 Pro lifetime</span>
+                        </div>
+                        <div id="pricing-pro-restore" class="pricing-restore-link">
+                            Already PRO? <a href="#" id="pricing-signin-btn">Just Sign in</a>
                         </div>
                     </div>
 
