@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Signature Cookbook — SigFix</title>
     <meta name="description" content="Step-by-step recipes for fixing the most common Outlook HTML email signature problems: broken images, Flexbox layouts, style blocks, and centering.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SigFix">
+    <meta property="og:title" content="HTML Signature Cookbook — SigFix">
+    <meta property="og:description" content="Step-by-step recipes for fixing the most common Outlook HTML email signature problems: broken images, Flexbox layouts, style blocks, and centering.">
+    <meta property="og:image" content="https://sigfix.syntaxlabs.io/open-graph.png">
+    <meta property="og:url" content="https://sigfix.syntaxlabs.io/cookbook">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HTML Signature Cookbook — SigFix">
+    <meta name="twitter:description" content="Step-by-step recipes for fixing the most common Outlook HTML email signature problems: broken images, Flexbox layouts, style blocks, and centering.">
+    <meta name="twitter:image" content="https://sigfix.syntaxlabs.io/open-graph.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,28 +69,18 @@
         .ck-back:hover { color: #ffffff; }
 
         .ck-brand {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
             text-decoration: none;
+            transition: opacity 0.2s ease;
         }
+
+        .ck-brand:hover { opacity: 0.9; }
 
         .ck-brand__logo {
-            width: 32px;
-            height: 32px;
-            background: #0078D4;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .ck-brand__name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffffff;
+            display: block;
+            height: 28px;
+            width: auto;
         }
 
         /* ── Hero ─────────────────────────────────────────────── */
@@ -369,11 +370,8 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
                 Back to App
             </a>
-            <a href="/" class="ck-brand">
-                <div class="ck-brand__logo">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/></svg>
-                </div>
-                <span class="ck-brand__name">SigFix</span>
+            <a href="/" class="ck-brand" aria-label="SigFix home">
+                <img src="/logo/logo.svg" alt="SigFix" class="ck-brand__logo" width="167" height="46">
             </a>
         </div>
     </header>
@@ -682,13 +680,10 @@
         <div class="lp-container">
             <div class="lp-footer-top">
                 <div class="lp-footer-brand">
-                    <div class="lp-footer-logo">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/></svg>
-                    </div>
-                    <div>
-                        <p class="lp-footer-brand-name">SigFix</p>
-                        <p class="lp-footer-toolkit">Part of the Syntax Labs Email Toolkit</p>
-                    </div>
+                    <a href="/" class="lp-footer-brand-link" aria-label="SigFix home">
+                        <img src="/logo/logo.svg" alt="SigFix" class="lp-footer-logo" width="167" height="46">
+                    </a>
+                    <p class="lp-footer-toolkit">Part of the Syntax Labs Email Toolkit</p>
                 </div>
                 <nav class="lp-footer-nav">
                     <a href="/privacy-policy">Privacy Policy</a>

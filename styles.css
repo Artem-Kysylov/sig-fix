@@ -16,6 +16,24 @@ html {
     padding-right: max(1rem, env(safe-area-inset-right));
 }
 
+.app-header__brand {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.app-header__brand:hover {
+    opacity: 0.9;
+}
+
+.app-header__logo {
+    display: block;
+    height: 32px;
+    width: auto;
+}
+
 /* Full-width header bar */
 .app-header {
     padding-top: max(0.75rem, env(safe-area-inset-top));
@@ -1305,27 +1323,25 @@ textarea:focus-visible {
 
 .lp-footer-brand {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.lp-footer-brand-link {
+    display: inline-flex;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.lp-footer-brand-link:hover {
+    opacity: 0.9;
 }
 
 .lp-footer-logo {
-    width: 36px;
-    height: 36px;
-    background: #0078D4;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    flex-shrink: 0;
-}
-
-.lp-footer-brand-name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0 0 2px;
+    display: block;
+    height: 28px;
+    width: auto;
 }
 
 .lp-footer-toolkit {

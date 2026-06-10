@@ -4,7 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SigFix - Outlook Signature Utility</title>
-    
+    <meta name="description" content="Fix your broken Outlook signatures instantly. The local-first HTML transpiler, cleaner, and extractor for bulletproof emails.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SigFix">
+    <meta property="og:title" content="SigFix - Outlook Signature Utility">
+    <meta property="og:description" content="Fix your broken Outlook signatures instantly. The local-first HTML transpiler, cleaner, and extractor for bulletproof emails.">
+    <meta property="og:image" content="https://sigfix.syntaxlabs.io/open-graph.png">
+    <meta property="og:url" content="https://sigfix.syntaxlabs.io/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SigFix - Outlook Signature Utility">
+    <meta name="twitter:description" content="Fix your broken Outlook signatures instantly. The local-first HTML transpiler, cleaner, and extractor for bulletproof emails.">
+    <meta name="twitter:image" content="https://sigfix.syntaxlabs.io/open-graph.png">
+
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,16 +59,8 @@
         <header class="app-header shrink-0 w-full border-b border-white/10 enhanced-glass">
             <div class="app-container px-4 sm:px-6 py-3 sm:py-4">
             <div class="app-header__inner flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <a href="/" class="flex items-center space-x-3 hover:opacity-90 transition-opacity shrink-0">
-                    <div class="w-8 h-8 bg-outlook-blue rounded-lg flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/>
-                        </svg>
-                    </div>
-                    <div class="min-w-0">
-                        <h1 class="text-lg sm:text-xl font-semibold">SigFix</h1>
-                        <p class="text-xs text-white/60 truncate">sigfix.syntaxlabs.io</p>
-                    </div>
+                <a href="/" class="app-header__brand" aria-label="SigFix home">
+                    <img src="/logo/logo.svg" alt="SigFix" class="app-header__logo" width="167" height="46">
                 </a>
                 <div class="app-header__actions flex items-center gap-4 sm:gap-6 self-start sm:self-auto">
                     <nav class="header-nav" aria-label="Page sections">
@@ -578,13 +582,10 @@
         <div class="lp-container">
             <div class="lp-footer-top">
                 <div class="lp-footer-brand">
-                    <div class="lp-footer-logo">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM6.5 10.5L12 8l5.5 2.5L12 13l-5.5-2.5z"/></svg>
-                    </div>
-                    <div>
-                        <p class="lp-footer-brand-name">SigFix</p>
-                        <p class="lp-footer-toolkit">Part of the Syntax Labs Email Toolkit</p>
-                    </div>
+                    <a href="/" class="lp-footer-brand-link" aria-label="SigFix home">
+                        <img src="/logo/logo.svg" alt="SigFix" class="lp-footer-logo" width="167" height="46">
+                    </a>
+                    <p class="lp-footer-toolkit">Part of the Syntax Labs Email Toolkit</p>
                 </div>
                 <nav class="lp-footer-nav">
                     <a href="/privacy-policy">Privacy Policy</a>
