@@ -278,6 +278,138 @@ const setupFileInput = () => {
   });
 };
 
+// ─── Free usage limits ───────────────────────────────────────────────────────
+
+const FREE_DAILY_LIMIT = 3;
+const USAGE_STORAGE_KEY = 'sigfix_free_usage';
+
+const getTodayString = () => {
+  return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+};
+
+const getFreeUsageCount = () => {
+  try {
+    const stored = localStorage.getItem(USAGE_STORAGE_KEY);
+    if (!stored) return { count: 0, date: getTodayString() };
+    
+    const usage = JSON.parse(stored);
+    const today = getTodayString();
+    
+    // Reset counter if date changed
+    if (usage.date !== today) {
+      return { count: 0, date: today };
+    }
+    
+    return usage;
+  } catch {
+    return { count: 0, date: getTodayString() };
+  }
+};
+
+const incrementFreeUsage = () => {
+  const today = getTodayString();
+  const current = getFreeUsageCount();
+  
+  const updated = {
+    count: current.date === today ? current.count + 1 : 1,
+    date: today,
+  };
+  
+  try {
+    localStorage.setItem(USAGE_STORAGE_KEY, JSON.stringify(updated));
+  } catch (error) {
+    console.error('Failed to save usage count:', error);
+  }
+  
+  return updated;
+};
+
+const updateUsageUI = () => {
+  const usageInfo = document.getElementById('usage-info');
+  if (!usageInfo) return;
+  
+  const isProUser = window.user?.isPro === true;
+  
+  if (isProUser) {
+    usageInfo.textContent = 'Pro Account — Unlimited Access';
+    usageInfo.className = 'usage-info usage-info--pro';
+  } else {
+    const usage = getFreeUsageCount();
+    const remaining = Math.max(0, FREE_DAILY_LIMIT - usage.count);
+    usageInfo.textContent = `Free fixes left today: ${remaining}/${FREE_DAILY_LIMIT}`;
+    usageInfo.className = `usage-info ${remaining === 0 ? 'usage-info--exhausted' : ''}`;
+  }
+};
+
+const showLimitReachedModal = () => {
+  // Create modal HTML
+  const modal = document.createElement('div');
+  modal.className = 'limit-modal';
+  modal.innerHTML = `
+    <div class="limit-modal__backdrop"></div>
+    <div class="limit-modal__content">
+      <div class="limit-modal__icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h3 class="limit-modal__title">Daily Limit Reached</h3>
+      <p class="limit-modal__text">You've used all <strong>3 free fixes</strong> for today. Upgrade to Lifetime Pro for unlimited signature fixes!</p>
+      <div class="limit-modal__actions">
+        <button class="limit-modal__btn limit-modal__btn--primary" id="modal-upgrade-btn">
+          Upgrade to Pro
+        </button>
+        <button class="limit-modal__btn limit-modal__btn--secondary" id="modal-close-btn">
+          Maybe Later
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Add event listeners
+  const upgradeBtn = modal.querySelector('#modal-upgrade-btn');
+  const closeBtn = modal.querySelector('#modal-close-btn');
+  const backdrop = modal.querySelector('.limit-modal__backdrop');
+  
+  const closeModal = () => {
+    modal.classList.add('limit-modal--closing');
+    setTimeout(() => {
+      if (modal.parentNode) {
+        document.body.removeChild(modal);
+      }
+    }, 300);
+  };
+  
+  const scrollToPricing = () => {
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    closeModal();
+  };
+  
+  upgradeBtn.addEventListener('click', scrollToPricing);
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  
+  // Close on Escape key
+  const handleEscape = (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      document.removeEventListener('keydown', handleEscape);
+    }
+  };
+  document.addEventListener('keydown', handleEscape);
+  
+  // Animate in
+  setTimeout(() => {
+    modal.classList.add('limit-modal--show');
+  }, 10);
+};
+
 // ─── Signature processing ────────────────────────────────────────────────────
 
 /**
@@ -293,6 +425,19 @@ const processSignature = async () => {
   if (!hasContent) {
     showNotification('Please add some content first', 'warning');
     return;
+  }
+
+  // Check Pro status and usage limits
+  const isProUser = window.user?.isPro === true;
+
+  if (!isProUser) {
+    const usage = getFreeUsageCount();
+    
+    // If limit exhausted
+    if (usage.count >= FREE_DAILY_LIMIT) {
+      showLimitReachedModal();
+      return; // Block execution
+    }
   }
 
   // Mint a new token — this automatically cancels any prior in-flight run.
@@ -320,6 +465,12 @@ const processSignature = async () => {
     setCopyButtonsEnabled(els, true);
     setPreviewStatus(els.previewStatus, 'fixed');
     showNotification('Signature processed successfully!', 'success');
+    
+    // Increment usage counter for free users after successful processing
+    if (!isProUser) {
+      incrementFreeUsage();
+      updateUsageUI();
+    }
   } catch (error) {
     if (token !== activeToken) return;
     console.error('Processing error:', error);
@@ -578,14 +729,16 @@ const init = () => {
   // Pricing CTA
   els.lifetimeAccessBtn?.addEventListener('click', handleLifetimeAccessClick);
 
-  // Header auth + Pro pricing
+  // Header auth + Pro pricing + Usage UI
   els.headerSignOutBtn?.addEventListener('click', handleSignOut);
   document.addEventListener('authChanged', (e) => {
     updateHeaderAuth(e.detail);
     updateProPricingUI(e.detail);
+    updateUsageUI();
   });
   updateHeaderAuth(window.user);
   updateProPricingUI(window.user);
+  updateUsageUI();
 
   setupDragAndDrop();
   setupFileInput();
