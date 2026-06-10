@@ -71,6 +71,15 @@ export const loginWithGoogle = async () => {
   return buildUserSession(result.user);
 };
 
+export const refreshUserSession = async () => {
+  const user = auth.currentUser;
+  if (!user) return null;
+
+  window.user = await buildUserSession(user);
+  document.dispatchEvent(new CustomEvent("authChanged", { detail: window.user }));
+  return window.user;
+};
+
 export const logoutUser = async () => {
   await signOut(auth);
 };

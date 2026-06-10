@@ -11,22 +11,46 @@ import {
   flashCopySuccess,
   setPreviewStatus,
 } from './ui.js';
-import { loginWithGoogle, logoutUser } from './auth.js';
+import { loginWithGoogle, logoutUser, refreshUserSession } from './auth.js';
 
 // ─── Paddle v3 setup ─────────────────────────────────────────────────────────
 
-const initPaddle = () => {
-  if (typeof Paddle === 'undefined') {
-    console.error('Paddle SDK not loaded.');
-    return false;
-  }
-
-  Paddle.Environment.set('sandbox');
-  Paddle.Initialize({ token: 'test_17d88feed3e3e6f507c557e5e39' });
-  return true;
+// Функция надежной загрузки Paddle SDK
+const loadPaddleSDK = () => {
+  return new Promise((resolve, reject) => {
+    if (typeof window.Paddle !== 'undefined') {
+      resolve(window.Paddle);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    script.onload = () => resolve(window.Paddle);
+    script.onerror = () => reject(new Error('Failed to load Paddle SDK.'));
+    document.head.appendChild(script);
+  });
 };
 
-let paddleReady = false;
+// Главная функция инициализации
+const initializePaymentSystem = async () => {
+  try {
+    await loadPaddleSDK();
+    Paddle.Environment.set('sandbox');
+    Paddle.Initialize({
+      token: 'test_17d88feed3e3e6f507c557e5e39',
+      eventCallback: (event) => {
+        if (event.name === 'checkout.completed') {
+          handleCheckoutCompleted();
+        }
+      },
+    });
+    console.log('✅ Paddle Sandbox successfully initialized via dynamic import.');
+  } catch (error) {
+    console.error('❌ Paddle init error:', error);
+  }
+};
+
+// Запускаем инициализацию при старте приложения
+initializePaymentSystem();
 
 // ─── DOM element references ─────────────────────────────────────────────────
 
@@ -66,6 +90,7 @@ const els = {
 
   // Pricing CTA
   lifetimeAccessBtn:    null,
+  proLifetimeBadge:     null,
 
   // Header auth
   headerUserMenu:       document.getElementById('header-user-menu'),
@@ -369,6 +394,61 @@ const setupMobileHandlers = () => {
   }, { passive: false });
 };
 
+const applyProAccess = (user) => {
+  if (!user) return;
+  window.user = { ...user, isPro: true };
+  document.dispatchEvent(new CustomEvent('authChanged', { detail: window.user }));
+};
+
+const handleCheckoutCompleted = async () => {
+  if (window.user) {
+    applyProAccess(window.user);
+  }
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    try {
+      const user = await refreshUserSession();
+      if (user?.isPro) {
+        showNotification('Welcome to Pro! Lifetime access activated.', 'success');
+        return;
+      }
+    } catch (error) {
+      console.error('Failed to refresh user after checkout:', error);
+    }
+
+    await delay(1000);
+  }
+
+  if (window.user && !window.user.isPro) {
+    applyProAccess(window.user);
+  }
+
+  showNotification('Welcome to Pro! Lifetime access activated.', 'success');
+};
+
+// ─── Pro pricing UI ──────────────────────────────────────────────────────────
+
+const PRO_BTN_ACTIVE_TEXT = 'Pro lifetime activated';
+const PRO_BTN_DEFAULT_TEXT = 'Get Lifetime Access';
+
+const updateProPricingUI = (user) => {
+  const btn = els.lifetimeAccessBtn;
+  const badge = els.proLifetimeBadge;
+  if (!btn) return;
+
+  const isPro = user?.isPro === true;
+
+  btn.textContent = isPro ? PRO_BTN_ACTIVE_TEXT : PRO_BTN_DEFAULT_TEXT;
+  btn.disabled = isPro;
+  btn.classList.toggle('lp-pricing-cta--activated', isPro);
+  btn.setAttribute('aria-disabled', isPro ? 'true' : 'false');
+
+  if (badge) {
+    badge.classList.toggle('hidden', !isPro);
+    badge.setAttribute('aria-hidden', isPro ? 'false' : 'true');
+  }
+};
+
 // ─── Header auth UI ──────────────────────────────────────────────────────────
 
 const updateHeaderAuth = (user) => {
@@ -401,8 +481,9 @@ const handleSignOut = async () => {
 // ─── Paddle checkout ─────────────────────────────────────────────────────────
 
 const openPaddleCheckout = (user = window.user) => {
-  if (!paddleReady) {
-    showNotification('Checkout is unavailable right now. Please refresh and try again.', 'error');
+  if (typeof window.Paddle === 'undefined') {
+    console.error('Cannot open checkout: Paddle SDK is not fully loaded yet.');
+    showNotification('Payment system is still loading. Please try again in a moment.', 'warning');
     return;
   }
 
@@ -411,23 +492,28 @@ const openPaddleCheckout = (user = window.user) => {
     return;
   }
 
-  Paddle.Checkout.open({
-    items: [{ priceId: 'pri_01ktphzt9v6f257v3zgdfdx45m', quantity: 1 }],
-    customer: { email: user.email },
-    customData: { firebaseUID: user.uid },
-    settings: {
-      displayMode: 'overlay',
-      theme: 'dark',
-      locale: 'en',
-    },
-  });
+  try {
+    Paddle.Checkout.open({
+      items: [{ priceId: 'pri_01ktphzt9v6f257v3zgdfdx45m', quantity: 1 }],
+      customer: { email: user.email },
+      customData: { firebaseUID: user.uid },
+      settings: {
+        displayMode: 'overlay',
+        theme: 'dark',
+        locale: 'en',
+      },
+    });
+  } catch (error) {
+    console.error('Paddle checkout failed:', error);
+    showNotification('Failed to open checkout. Please try again.', 'error');
+  }
 };
 
 // ─── Pricing CTA — Google auth gate ─────────────────────────────────────────
 
 const handleLifetimeAccessClick = async () => {
   const btn = els.lifetimeAccessBtn;
-  if (!btn) return;
+  if (!btn || window.user?.isPro) return;
 
   const originalText = btn.textContent;
   let user = window.user;
@@ -460,9 +546,8 @@ const handleLifetimeAccessClick = async () => {
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 const init = () => {
-  paddleReady = initPaddle();
-
   els.lifetimeAccessBtn = document.getElementById('lifetime-access-btn');
+  els.proLifetimeBadge = document.getElementById('pro-lifetime-badge');
 
   // Left panel: mode tabs
   els.tabAI.addEventListener('click',        () => switchMode('ai'));
@@ -493,10 +578,14 @@ const init = () => {
   // Pricing CTA
   els.lifetimeAccessBtn?.addEventListener('click', handleLifetimeAccessClick);
 
-  // Header auth
+  // Header auth + Pro pricing
   els.headerSignOutBtn?.addEventListener('click', handleSignOut);
-  document.addEventListener('authChanged', (e) => updateHeaderAuth(e.detail));
+  document.addEventListener('authChanged', (e) => {
+    updateHeaderAuth(e.detail);
+    updateProPricingUI(e.detail);
+  });
   updateHeaderAuth(window.user);
+  updateProPricingUI(window.user);
 
   setupDragAndDrop();
   setupFileInput();

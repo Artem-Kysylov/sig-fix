@@ -925,8 +925,58 @@ textarea:focus-visible {
     pointer-events: none;
 }
 
-.lp-pricing-card--pro .lp-pricing-cta {
+.lp-pricing-card--pro .lp-pricing-cta-wrap {
     margin-top: auto;
+}
+
+.lp-pricing-cta-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lp-pricing-cta-wrap .lp-pricing-cta {
+    flex: 1;
+    min-width: 0;
+}
+
+.lp-pro-lifetime-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.22) 0%, rgba(255, 152, 0, 0.12) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.45);
+    color: #ffd54f;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.18);
+    animation: lp-pro-badge-float 3s ease-in-out infinite;
+}
+
+@keyframes lp-pro-badge-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.lp-pricing-cta--activated {
+    background: linear-gradient(135deg, #1e6b32 0%, #0f4520 100%);
+    border: 1px solid rgba(76, 175, 80, 0.45);
+    cursor: default;
+}
+
+.lp-pricing-cta--activated:hover {
+    background: linear-gradient(135deg, #1e6b32 0%, #0f4520 100%);
+    transform: none;
+}
+
+.lp-pricing-cta--activated:disabled {
+    opacity: 1;
+    cursor: default;
 }
 
 .lp-pricing-badge {
@@ -1440,6 +1490,16 @@ textarea:focus-visible {
 
     .lp-pricing-card {
         padding: 36px 28px 32px;
+    }
+
+    .lp-pricing-cta-wrap {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .lp-pro-lifetime-badge {
+        align-self: flex-end;
+        margin-top: -4px;
     }
 
     .lp-footer-top {
