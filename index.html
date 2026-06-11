@@ -419,45 +419,53 @@
             <div class="lp-container">
                 <div class="lp-section-header">
                     <span class="lp-eyebrow">Pricing</span>
-                    <h2 class="lp-heading lp-heading--center">One price. Yours forever.</h2>
+                    <h2 class="lp-heading lp-heading--center">Choose your plan</h2>
+                    <p class="lp-section-subtitle">Unlimited preview for everyone. Unlock copy with Pro.</p>
                 </div>
-                <div class="lp-pricing-grid">
+                <div class="lp-pricing-grid lp-pricing-grid--two">
 
-                    <!-- Free Plan -->
-                    <div class="lp-pricing-card lp-pricing-card--free">
-                        <div class="lp-pricing-badge lp-pricing-badge--muted">Free Plan</div>
+                    <!-- Annual Pro (Decoy) -->
+                    <div class="lp-pricing-card lp-pricing-card--annual">
+                        <div class="lp-pricing-badge lp-pricing-badge--annual">Annual Pro</div>
                         <div class="lp-pricing-price">
-                            <span class="lp-pricing-currency">$</span>0
-                            <span class="lp-pricing-note">forever</span>
+                            <span class="lp-pricing-currency">$</span>12
+                            <span class="lp-pricing-note">/ year</span>
                         </div>
+                        <p class="lp-pricing-description">Billed annually. Cancel anytime.</p>
                         <ul class="lp-pricing-benefits">
                             <li>
-                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span class="lp-pricing-benefit-text">3 signature fixes per day</span>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text"><strong>UNLIMITED</strong> signature fixes</span>
                             </li>
                             <li>
-                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span class="lp-pricing-benefit-text">Access to AI Transpiler mode</span>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Access to <strong>ALL</strong> modes</span>
                             </li>
                             <li>
-                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span class="lp-pricing-benefit-text">Copy Outlook-safe HTML code</span>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">One-Click Rich Text copying</span>
                             </li>
                             <li>
-                                <svg class="lp-check lp-check--muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span class="lp-pricing-benefit-text">Local-first browser processing</span>
+                                <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="lp-pricing-benefit-text">Priority email support</span>
                             </li>
                         </ul>
-                        <a href="#" class="lp-pricing-cta lp-pricing-cta--outline">Use for Free</a>
+                        <div class="lp-pricing-cta-wrap">
+                            <button type="button" id="buy-annual-btn" class="lp-pricing-cta lp-pricing-cta--annual">Get Annual Access</button>
+                        </div>
                     </div>
 
-                    <!-- Lifetime Access -->
+                    <!-- Lifetime Pro (Main Goal) -->
                     <div class="lp-pricing-card lp-pricing-card--pro">
-                        <div class="lp-pricing-badge">Lifetime Access</div>
+                        <div class="lp-pricing-badge lp-pricing-badge--best">
+                            <span class="lp-pricing-badge__icon">🏆</span>
+                            Best Value
+                        </div>
                         <div class="lp-pricing-price">
                             <span class="lp-pricing-currency">$</span>14
                             <span class="lp-pricing-note">one-time payment</span>
                         </div>
+                        <p class="lp-pricing-description">Pay once, use forever. No recurring fees.</p>
                         <ul class="lp-pricing-benefits">
                             <li>
                                 <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -469,7 +477,7 @@
                             </li>
                             <li>
                                 <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span class="lp-pricing-benefit-text">Instant One-Click Rich Text copying (No code needed)</span>
+                                <span class="lp-pricing-benefit-text">Instant One-Click Rich Text copying</span>
                             </li>
                             <li>
                                 <svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -481,7 +489,7 @@
                             </li>
                         </ul>
                         <div class="lp-pricing-cta-wrap">
-                            <button type="button" id="lifetime-access-btn" class="lp-pricing-cta">Get Lifetime Access</button>
+                            <button type="button" id="buy-lifetime-btn" class="lp-pricing-cta">Get Lifetime Access</button>
                             <span id="pro-lifetime-badge" class="lp-pro-lifetime-badge hidden" aria-hidden="true">🏆 Pro lifetime</span>
                         </div>
                         <div id="pricing-pro-restore" class="pricing-restore-link">

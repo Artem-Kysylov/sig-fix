@@ -1038,6 +1038,11 @@ textarea:focus-visible {
     align-items: stretch;
 }
 
+.lp-pricing-grid--two {
+    max-width: 720px;
+    gap: 20px;
+}
+
 /* Shared card base */
 .lp-pricing-card {
     display: flex;
@@ -1074,12 +1079,23 @@ textarea:focus-visible {
     color: rgba(255, 255, 255, 0.3);
 }
 
+/* ── Annual Pro (decoy) ─────────────────────────────────────────────── */
+.lp-pricing-card--annual {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
 /* ── Lifetime Access (premium) ──────────────────────────────────────── */
 .lp-pricing-card--pro {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(0, 120, 212, 0.35);
+    transform: scale(1.05);
+    position: relative;
     box-shadow:
         0 0 0 1px rgba(0, 120, 212, 0.1),
         0 24px 64px rgba(0, 0, 0, 0.4),
@@ -1153,6 +1169,18 @@ textarea:focus-visible {
     cursor: default;
 }
 
+.lp-pricing-cta--annual {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.lp-pricing-cta--annual:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
 .pricing-restore-link {
     margin-top: 12px;
     text-align: center;
@@ -1182,6 +1210,33 @@ textarea:focus-visible {
     padding: 5px 14px;
     border-radius: 100px;
     margin-bottom: 28px;
+}
+
+.lp-pricing-badge--annual {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.lp-pricing-badge--best {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: #ffd54f;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lp-pricing-badge__icon {
+    font-size: 14px;
+}
+
+.lp-pricing-description {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 24px;
+    text-align: center;
+    line-height: 1.4;
 }
 
 /* Meta block below both cards */
@@ -1678,6 +1733,14 @@ textarea:focus-visible {
     .lp-pricing-grid {
         grid-template-columns: 1fr;
         max-width: 480px;
+    }
+
+    .lp-pricing-grid--two {
+        max-width: 480px;
+    }
+
+    .lp-pricing-card--pro {
+        transform: none;
     }
 
     .lp-pricing-card {

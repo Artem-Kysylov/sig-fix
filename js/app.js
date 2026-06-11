@@ -34,16 +34,15 @@ const loadPaddleSDK = () => {
 const initializePaymentSystem = async () => {
   try {
     await loadPaddleSDK();
-    Paddle.Environment.set('sandbox');
     Paddle.Initialize({
-      token: 'test_17d88feed3e3e6f507c557e5e39',
+      token: 'live_79cb52b9998500671a080604000',
       eventCallback: (event) => {
         if (event.name === 'checkout.completed') {
           handleCheckoutCompleted();
         }
       },
     });
-    console.log('✅ Paddle Sandbox successfully initialized via dynamic import.');
+    console.log('✅ Paddle Live Mode successfully initialized via dynamic import.');
   } catch (error) {
     console.error('❌ Paddle init error:', error);
   }
@@ -102,6 +101,10 @@ const els = {
   headerLogoutBtn:      document.getElementById('header-logout-btn'),
   pricingSignInBtn:     document.getElementById('pricing-signin-btn'),
   pricingRestore:       document.getElementById('pricing-pro-restore'),
+  
+  // Pricing buttons
+  buyAnnualBtn:         document.getElementById('buy-annual-btn'),
+  buyLifetimeBtn:       document.getElementById('buy-lifetime-btn'),
 };
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
@@ -351,7 +354,7 @@ const showExportPaywallModal = () => {
   }, 10);
 };
 
-const initiateUpgradeFlow = async () => {
+const initiateUpgradeFlow = async (priceId = 'pri_01kttyhjhn7z90jmbt2mxyhyxr') => {
   let user = window.user;
 
   if (!user) {
@@ -364,7 +367,7 @@ const initiateUpgradeFlow = async () => {
     }
   }
 
-  openPaddleCheckout(user);
+  openPaddleCheckout(priceId, user);
 };
 
 const updateCopyButtonsUI = () => {
@@ -566,16 +569,25 @@ const PRO_BTN_ACTIVE_TEXT = 'Pro lifetime activated';
 const PRO_BTN_DEFAULT_TEXT = 'Get Lifetime Access';
 
 const updateProPricingUI = (user) => {
-  const btn = els.lifetimeAccessBtn;
+  const lifetimeBtn = els.buyLifetimeBtn;
+  const annualBtn = els.buyAnnualBtn;
   const badge = els.proLifetimeBadge;
-  if (!btn) return;
 
   const isPro = user?.isPro === true;
 
-  btn.textContent = isPro ? PRO_BTN_ACTIVE_TEXT : PRO_BTN_DEFAULT_TEXT;
-  btn.disabled = isPro;
-  btn.classList.toggle('lp-pricing-cta--activated', isPro);
-  btn.setAttribute('aria-disabled', isPro ? 'true' : 'false');
+  if (lifetimeBtn) {
+    lifetimeBtn.textContent = isPro ? PRO_BTN_ACTIVE_TEXT : 'Get Lifetime Access';
+    lifetimeBtn.disabled = isPro;
+    lifetimeBtn.classList.toggle('lp-pricing-cta--activated', isPro);
+    lifetimeBtn.setAttribute('aria-disabled', isPro ? 'true' : 'false');
+  }
+
+  if (annualBtn) {
+    annualBtn.textContent = isPro ? PRO_BTN_ACTIVE_TEXT : 'Get Annual Access';
+    annualBtn.disabled = isPro;
+    annualBtn.classList.toggle('lp-pricing-cta--activated', isPro);
+    annualBtn.setAttribute('aria-disabled', isPro ? 'true' : 'false');
+  }
 
   if (badge) {
     badge.classList.toggle('hidden', !isPro);
@@ -614,7 +626,7 @@ const handleSignOut = async () => {
 
 // ─── Paddle checkout ─────────────────────────────────────────────────────────
 
-const openPaddleCheckout = (user = window.user) => {
+const openPaddleCheckout = (priceId, user = window.user) => {
   if (typeof window.Paddle === 'undefined') {
     console.error('Cannot open checkout: Paddle SDK is not fully loaded yet.');
     showNotification('Payment system is still loading. Please try again in a moment.', 'warning');
@@ -626,9 +638,15 @@ const openPaddleCheckout = (user = window.user) => {
     return;
   }
 
+  if (!priceId) {
+    console.error('Cannot open checkout: priceId is required.');
+    showNotification('Invalid pricing configuration. Please try again.', 'error');
+    return;
+  }
+
   try {
     Paddle.Checkout.open({
-      items: [{ priceId: 'pri_01ktphzt9v6f257v3zgdfdx45m', quantity: 1 }],
+      items: [{ priceId: priceId, quantity: 1 }],
       customer: { email: user.email },
       customData: { firebaseUID: user.uid },
       settings: {
@@ -680,7 +698,6 @@ const handleLifetimeAccessClick = async () => {
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 const init = () => {
-  els.lifetimeAccessBtn = document.getElementById('lifetime-access-btn');
   els.proLifetimeBadge = document.getElementById('pro-lifetime-badge');
   els.headerSignInBtn = document.getElementById('header-signin-btn');
   els.headerUserBlock = document.getElementById('header-user-block');
@@ -688,6 +705,8 @@ const init = () => {
   els.headerLogoutBtn = document.getElementById('header-logout-btn');
   els.pricingSignInBtn = document.getElementById('pricing-signin-btn');
   els.pricingRestore = document.getElementById('pricing-pro-restore');
+  els.buyAnnualBtn = document.getElementById('buy-annual-btn');
+  els.buyLifetimeBtn = document.getElementById('buy-lifetime-btn');
 
   // Left panel: mode tabs
   els.tabAI.addEventListener('click',        () => switchMode('ai'));
@@ -715,8 +734,14 @@ const init = () => {
   els.copyHtmlBtn.addEventListener('click', () => copyToClipboard('html'));
   els.copyRichBtn.addEventListener('click', () => copyToClipboard('rich'));
 
-  // Pricing CTA
-  els.lifetimeAccessBtn?.addEventListener('click', handleLifetimeAccessClick);
+  // Pricing CTAs
+  els.buyAnnualBtn?.addEventListener('click', async () => {
+    await initiateUpgradeFlow('pri_01kttye192bysjn01nhstb55r5'); // Annual Pro
+  });
+
+  els.buyLifetimeBtn?.addEventListener('click', async () => {
+    await initiateUpgradeFlow('pri_01kttyhjhn7z90jmbt2mxyhyxr'); // Lifetime Pro
+  });
 
   // Auth event handlers
   els.headerSignInBtn?.addEventListener('click', async (e) => {
