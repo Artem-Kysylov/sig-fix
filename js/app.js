@@ -643,7 +643,7 @@ const openPaddleCheckout = (priceId, user = window.user) => {
       customData: { firebaseUID: user.uid },
       settings: {
         displayMode: 'overlay',
-        theme: 'dark',
+        theme: 'light',
         locale: 'en',
       },
     });
