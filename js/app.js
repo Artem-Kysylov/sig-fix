@@ -99,8 +99,6 @@ const els = {
   headerUserBlock:      document.getElementById('header-user-block'),
   headerUserEmail:      document.getElementById('header-user-email'),
   headerLogoutBtn:      document.getElementById('header-logout-btn'),
-  pricingSignInBtn:     document.getElementById('pricing-signin-btn'),
-  pricingRestore:       document.getElementById('pricing-pro-restore'),
   
   // Pricing buttons
   buyAnnualBtn:         document.getElementById('buy-annual-btn'),
@@ -386,24 +384,18 @@ const updateCopyButtonsUI = () => {
 };
 
 const updateAuthUI = (user) => {
-  const { 
-    headerSignInBtn, 
-    headerUserBlock, 
-    headerUserEmail, 
-    pricingRestore 
-  } = els;
+  const { headerSignInBtn, headerUserBlock, headerUserEmail } = els;
+  const pricingRestoreLinks = document.querySelectorAll('.pricing-restore-link');
 
   if (user) {
-    // User is logged in
     if (headerSignInBtn) headerSignInBtn.style.display = 'none';
     if (headerUserBlock) headerUserBlock.style.display = 'flex';
     if (headerUserEmail) headerUserEmail.textContent = user.email;
-    if (pricingRestore) pricingRestore.style.display = 'none';
+    pricingRestoreLinks.forEach((el) => { el.style.display = 'none'; });
   } else {
-    // User is logged out
     if (headerSignInBtn) headerSignInBtn.style.display = 'inline-block';
     if (headerUserBlock) headerUserBlock.style.display = 'none';
-    if (pricingRestore) pricingRestore.style.display = 'block';
+    pricingRestoreLinks.forEach((el) => { el.style.display = 'block'; });
   }
 };
 
@@ -703,8 +695,6 @@ const init = () => {
   els.headerUserBlock = document.getElementById('header-user-block');
   els.headerUserEmail = document.getElementById('header-user-email');
   els.headerLogoutBtn = document.getElementById('header-logout-btn');
-  els.pricingSignInBtn = document.getElementById('pricing-signin-btn');
-  els.pricingRestore = document.getElementById('pricing-pro-restore');
   els.buyAnnualBtn = document.getElementById('buy-annual-btn');
   els.buyLifetimeBtn = document.getElementById('buy-lifetime-btn');
 
@@ -764,14 +754,16 @@ const init = () => {
     }
   });
 
-  els.pricingSignInBtn?.addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      await loginWithGoogle();
-    } catch (error) {
-      console.error('Pricing sign-in failed:', error);
-      showNotification('Sign-in was cancelled or failed', 'error');
-    }
+  document.querySelectorAll('.pricing-signin-btn').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await loginWithGoogle();
+      } catch (error) {
+        console.error('Pricing sign-in failed:', error);
+        showNotification('Sign-in was cancelled or failed', 'error');
+      }
+    });
   });
 
   // Header auth + Pro pricing + Copy buttons + Auth UI
